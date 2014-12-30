@@ -1,8 +1,8 @@
 package shoppingsolutionproject
 
-class Item {
+class Item extends com.metasieve.shoppingcart.Shoppable{
 
-	int squNumber
+	int productNumber
 	String name
 	String description
 	Double shippingCost = null
@@ -12,12 +12,13 @@ class Item {
 	Category category
 	
 	static constraints = {
-		squNumber min: 0, unique: true
-		name blank:false, minSize:5
-		description blank:false, minSize:30, widget:'textarea'
+		shoppingItem display:false
+		productNumber min: 0, unique: true
+		name blank:false
+		description blank:false, widget:'textarea'
 		retailPrice min:0.00d
 		shippingCost nullable:true
-		url blank:false
+		url blank:false, unique: true
 		salePrice nullable:true, blank:true
 		category nullable:false
 	}

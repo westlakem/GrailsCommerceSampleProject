@@ -6,31 +6,35 @@ class ShoppingCartController {
 
     def shoppingCartService
 	
+	def view(){
+		def cart = shoppingCartItems()
+		[cart:cart]
+	}
+	
 	def addToCart(){
-		def product = Item.findBySku(params.sku)
+		def product = Item.findByProductNumber(params.productNumber)
 		shoppingCartService.addToShoppingCart(product)
 		render(text:'',contentType:'text/plain')
 	}
 	
 	def itemInCart(){
 		def cartHasItem = false
-		def product = Item.findBySku(params.sku)
 		def cart = shoppingCartItems()
 		cart.each() { item ->
-			if (item.productInfo.sku == params.sku){
+			println("pN"+params.productNumber)
+			println("pI"+item.productInfo['productNumber'])
+			println(item.productInfo['productNumber'].toString() == params.productNumber.toString())
+			if (item.productInfo['productNumber'].toString() == params.productNumber.toString()){
 				cartHasItem = true
 			} 
 		}
 		render(cartHasItem)
 	}
 	
-	def view(){
-		def cart = shoppingCartItems()
-		[cart:cart]
-	}
+
 
 	def removeFromCart(){
-		def product = Item.findBySku(params.sku)
+		def product = Item.findByProductNumber(params.productNumber)
 		def qty = shoppingCartService.getQuantity(product)
 		shoppingCartService.removeFromShoppingCart(product, qty)
 		def cart = shoppingCartItems()
@@ -43,7 +47,7 @@ class ShoppingCartController {
 	}
 	
 	def updateQuantity(){
-		def product = Item.findBySku(params.sku)
+		def product = Item.findByProductNumber(params.productNumber)
 		def currentQuantity = shoppingCartService.getQuantity(product).toInteger()
 		def newQuantity = params.quantity.toInteger()
 		if (currentQuantity > newQuantity){
@@ -54,7 +58,13 @@ class ShoppingCartController {
 			def difference = newQuantity - currentQuantity 
 			shoppingCartService.addToShoppingCart(product, difference)
 		}
-		def newPrice = shoppingCartService.getQuantity(product)*product.price
+		def newPrice
+		if (product.salePrice!=null){
+			newPrice = String.format("%.2f", (shoppingCartService.getQuantity(product)*product.salePrice))
+		}
+		else{
+			newPrice = String.format("%.2f", (shoppingCartService.getQuantity(product)*product.retailPrice))
+		}
 		render(newPrice)
 	}
 	
@@ -68,6 +78,20 @@ class ShoppingCartController {
 
 		cart.add(itemInfo)
 		return cart
+		}
+	}
+	
+	public def getShippingCost(){
+		def shippingCost=0
+		def cart = shoppingCartItems();
+		if (cart.isEmpty()){
+			render(0.00)
+		}
+		else{
+			cart.each(){item ->
+				shippingCost += item.productInfo['shippingCost']*item.qty
+			}
+			render String.format("%.2f",shippingCost)
 		}
 	} 	
 	

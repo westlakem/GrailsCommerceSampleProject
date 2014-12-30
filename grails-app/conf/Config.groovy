@@ -85,6 +85,8 @@ grails.hibernate.pass.readonly = false
 // configure passing read-only to OSIV session by default, requires "singleSession = false" OSIV mode
 grails.hibernate.osiv.readonly = false
 
+shoppingService.paymentProvider="anything else"
+
 environments {
     development {
         grails.logging.jul.usebridge = true

@@ -17,4 +17,159 @@ if (typeof jQuery !== 'undefined') {
 			$(this).fadeOut();
 		});
 	})(jQuery);
+};
+
+$(document).ready( function() { 
+	updateTotals();
+});
+
+$(document).ready(function(){
+	$('.add_to_cart').each(function(){
+		var $button = $(this);
+		$.ajax({
+		    url: '/ShoppingSolutionProject/shoppingCart/itemInCart',
+		    type: 'GET',
+		    async: false,
+		    data: {'productNumber' : $(this).attr('id')},
+		    success: function(response){
+		    	if(response == 'true'){
+		    		$button.removeClass('add_to_cart');
+		    		$button.addClass('item_added_to_cart');
+		    		$button.prop('value', 'Added to Cart!');
+		    	}
+		    }
+		});
+	});
+});
+
+$(document).ready( function() {
+	$('.pnqty').keyup(function(){
+	    if ($(this).val()==''){
+	    	
+	    }
+	    else if($(this).val() == '0'){
+	    	alert('To set the value to 0 you must remove the item from the cart');
+	    }
+	    else{
+	    	productNumber = $(this).attr('id').replace("quantity", "");
+	    	qty = $(this).val();
+	    	updateQty(qty,productNumber);
+	    }
+	});
+});
+
+$(document).ready( function() {
+	$(".remove_from_cart").click(function(){
+		var $button = $(this);
+		var productNumber = $button.attr('id');
+		$.ajax({
+		    url: '/ShoppingSolutionProject/shoppingCart/removeFromCart',
+		    type: 'GET',
+		    data: {'productNumber' : productNumber},
+		    success: function(response){
+		    	$("#product"+productNumber).remove();
+		    	if(response=="[]"){
+		    		$("#cartButtons").remove();
+		    		$("#cartButtons").remove();
+		    	}
+		    	updateTotals();
+		    },
+		    error: function(response){
+		    	alert(response.status);
+		    	return;
+		    }
+		})
+	});
+});
+	
+
+$(document).ready( function() {
+	$(".add_to_cart").click(function(){
+		var $button = $(this);
+		var productNumber = $button.attr('id');
+		if ($button.hasClass("add_to_cart")){
+			$.ajax({
+		        url: '/ShoppingSolutionProject/shoppingCart/addToCart',
+		        type: 'GET',
+		        data: {'productNumber' : productNumber},
+		        success: function(){
+		    		$button.prop('value', 'Added to Cart!');
+		    		$button.removeClass("add_to_cart");
+		    		$button.addClass("item_added_to_cart");
+		        },
+		        error: function(response){
+		        	alert(response.status);
+		        	return;
+		        }
+		    });
+		}
+	});
+});
+$(document).ready( function() {
+	$("#searchBar").keyup(function(){
+		var $search = $(this).val();
+		if($search!=''){
+			$.ajax({
+				url: '/ShoppingSolutionProject/products/search',
+				type: 'GET',
+				data: {'searchParam' : $search},
+				success: function(response){
+					alert(response)
+				},
+				error: function(response){
+					alert(response.status);
+					return;
+				}
+			});
+		}
+	});
+});
+
+$(".empty_cart_link").click(function(){
+	return confirm("Are you sure you want to empty your cart?");
+});
+
+function updateTotals(){
+	updateSubtotal();
+	updateShippingCost();
+	updateTotal();
+}
+
+function updateQty(quantity, productNumber) {
+	$.ajax({
+	    url: '/ShoppingSolutionProject/shoppingCart/updateQuantity',
+	    type: 'GET',
+	    data: {'productNumber' : productNumber, 'quantity':quantity},
+	    success: function(response){
+	    	$("#price"+productNumber).html("$"+response);
+	    	updateTotals();
+	    }
+	});
+}
+
+function updateSubtotal(){
+	var subTotal = 0
+	$('span[id^="price"]').each(function(){
+		subTotal += parseFloat($(this).text().replace('$',''))
+	});
+	$('#subTotalAmmt').html('$'+subTotal.toFixed(2))
+}
+
+function updateShippingCost(){
+	$.ajax({
+	    url: '/ShoppingSolutionProject/shoppingCart/getShippingCost',
+	    type: 'GET',
+	    async: false,
+	    success: function(response){
+	    	$("#shippingCost").html("$"+response);
+	    }
+	});
+}
+
+function updateTotal(){
+	var total = 0
+	total += parseFloat($("#subTotalAmmt").text().replace('$',''))
+	total += parseFloat($("#shippingCost").text().replace('$',''))
+	total += parseFloat($("#salesTaxAmmt").text().replace('$',''))
+	$("#totalAmmt").html('$'+total.toFixed(2));
 }
