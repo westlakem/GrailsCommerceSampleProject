@@ -85,7 +85,24 @@ grails.hibernate.pass.readonly = false
 // configure passing read-only to OSIV session by default, requires "singleSession = false" OSIV mode
 grails.hibernate.osiv.readonly = false
 
-shoppingService.paymentProvider="anything else"
+cxf {
+	client {
+		taxCloud {
+			clientInterface = net.taxcloud.TaxCloudSoap
+			serviceEndpointAddress = 'https://api.taxcloud.net/1.0/TaxCloud.asmx'
+//			secured = [true or false] //optional - defaults to false
+//			contentType = [String value of http content type] - defaults to 'text/xml; charset=UTF8' 
+
+			//wsdl config
+			wsdl = 'https://api.taxcloud.net/1.0/TaxCloud.asmx?wsdl'
+			wsdlArgs = ["-autoNameResolution", "-validate"] //optional - only used by wsdl2java script
+//			namespace = [package name to use for generated classes] //optional - uses packages from wsdl if not provided
+//			client = [true or false] //optional - used to tell wsdl2java to output sample clients, usually not needed - defaults to false
+//			bindingFile = [Specifies JAXWS or JAXB binding file or XMLBeans context file] //optional
+//			outputDir = [location to output generated files] //optional - defaults to src/java
+		}
+	}
+}
 
 environments {
     development {
@@ -117,3 +134,14 @@ log4j.main = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// these are needed for the plugin
+
+//TODO: remove these before final plugin integration
+shoppingService.paymentProvider='2Checkout'
+shoppingService.taxCloud.loginId = '35942020'
+shoppingService.taxCloud.apiKey = '191D12F2-47BB-4612-9A9E-B67B5E64F790'
+shoppingService.taxCloud.uspsUserId = '380NONEY4790'
+shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']

@@ -12,13 +12,28 @@
 *= require_self
 */
 
+/* element styles */
+h2{padding: 10px 0px}
+
+.body {padding: 5px}
+
 /* uls */
 .no_bullet_list{list-style-type: none;}
+
+.horizontal_list{display: inline;}
 
 /* tables */
 .products td:nth-child(1), .products td:nth-child(2), .products td:nth-child(4), .products td:nth-child(5){
 	width:1px;
 }
+
+/* div tables */
+.table{display: table;}
+.row{display: table-row; border-spacing: 5px;}
+.cell{display: table-cell;}
+
+/* images */
+.itemImage{float:left; margin: 5px; padding: 5px; border: 1px solid black}
 
 /* buttons */
 .add_to_cart{background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#008080), to(#008080));
@@ -71,3 +86,5 @@ background-color: #85FF81;
 .full_width{width:100%;}
 
 .right{float:right;}
+
+.fileinput{padding-bottom: 10px;}

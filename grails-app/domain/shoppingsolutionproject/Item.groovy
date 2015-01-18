@@ -9,6 +9,7 @@ class Item extends com.metasieve.shoppingcart.Shoppable{
 	String url
 	Double retailPrice
 	Double salePrice = null
+	String primaryImage
 	Category category
 	
 	static constraints = {
@@ -21,5 +22,6 @@ class Item extends com.metasieve.shoppingcart.Shoppable{
 		url blank:false, unique: true
 		salePrice nullable:true, blank:true
 		category nullable:false
+		primaryImage display:false, nullable:true
 	}
 }

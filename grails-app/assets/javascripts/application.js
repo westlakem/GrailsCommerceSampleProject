@@ -24,20 +24,68 @@ $(document).ready( function() {
 });
 
 $(document).ready(function(){
+	$('.primaryImageSelector').change(function(){
+		var radio = $(this)
+		$.ajax({
+		    url: '/ShoppingSolutionProject/item/updatePrimaryImage',
+		    type: 'GET',
+		    async: false,
+		    data: {'productNumber' : radio.attr('name').replace('primaryImage',''), 
+		    	   'imageName' : radio.val()},
+		    success: function(response){
+		    },
+		    error: function(response){
+		    	alert(response.status);
+		    	return;
+		    }
+		    
+		});
+	});
+});
+
+$(document).ready(function(){
+	$('#useBillingInfo').click(function(){
+		$("#shippingName").val($("#name").val())
+		$("#shippingAddress1").val($("#address1").val())
+		$("#shippingAddress2").val($("#address2").val())
+		$("#shippingCity").val($("#city").val())
+		$("#shippingState").val($("#state").val())
+		$("#shippingZip").val($("#zip").val())
+	});
+});
+
+
+$(document).ready(function(){
+	$('.removeImage').click(function(){
+		var $button = $(this);
+		$.ajax({
+			url: '/ShoppingSolutionProject/item/removeImage',
+			type: 'GET',
+			async: false,
+			data: {'productNumber' : $button.attr('name'), 
+				'imageName' : $button.attr('id')},
+				success: function(response){
+					$("li[id='"+$button.attr('id')+"Image']").hide()
+				}
+		});
+	});
+});
+
+$(document).ready(function(){
 	$('.add_to_cart').each(function(){
 		var $button = $(this);
 		$.ajax({
-		    url: '/ShoppingSolutionProject/shoppingCart/itemInCart',
-		    type: 'GET',
-		    async: false,
-		    data: {'productNumber' : $(this).attr('id')},
-		    success: function(response){
-		    	if(response == 'true'){
-		    		$button.removeClass('add_to_cart');
-		    		$button.addClass('item_added_to_cart');
-		    		$button.prop('value', 'Added to Cart!');
-		    	}
-		    }
+			url: '/ShoppingSolutionProject/shoppingCart/itemInCart',
+			type: 'GET',
+			async: false,
+			data: {'productNumber' : $(this).attr('id')},
+			success: function(response){
+				if(response == 'true'){
+					$button.removeClass('add_to_cart');
+					$button.addClass('item_added_to_cart');
+					$button.prop('value', 'Added to Cart!');
+				}
+			}
 		});
 	});
 });

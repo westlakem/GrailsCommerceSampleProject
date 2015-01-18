@@ -1,0 +1,7 @@
+In config.groovy
+
+shoppingService.paymentProvider='2Checkout'
+shoppingService.taxCloud.loginId = '35942020'
+shoppingService.taxCloud.apiKey = '191D12F2-47BB-4612-9A9E-B67B5E64F790'
+shoppingService.taxCloud.uspsUserId = '380NONEY4790'
+shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
