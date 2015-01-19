@@ -140,8 +140,12 @@ log4j.main = {
 // these are needed for the plugin
 
 //TODO: remove these before final plugin integration
-shoppingService.paymentProvider='2Checkout'
 shoppingService.taxCloud.loginId = '35942020'
 shoppingService.taxCloud.apiKey = '191D12F2-47BB-4612-9A9E-B67B5E64F790'
 shoppingService.taxCloud.uspsUserId = '380NONEY4790'
 shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
+
+shoppingService.paymentProvider='authorize.net'
+shoppingService.authorizeDotNet.apiLoginID = '2Pk2Cud93'
+shoppingService.authorizeDotNet.transactionKey = '695bmUwYe7U93S5q'
+shoppingService.twoCheckout.publicKey = '0F212DC2-2E99-429B-8E2E-DE1E20D9B624'

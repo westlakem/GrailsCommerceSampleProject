@@ -24,15 +24,12 @@ $(document).ready( function() {
 });
 
 $(document).ready(function(){
-	$('.primaryImageSelector').change(function(){
-		var radio = $(this)
+	$('#2COPayment').click(function(){
 		$.ajax({
-		    url: '/ShoppingSolutionProject/item/updatePrimaryImage',
+		    url: '/ShoppingSolutionProject/shoppingCart/enterPayment',
 		    type: 'GET',
-		    async: false,
-		    data: {'productNumber' : radio.attr('name').replace('primaryImage',''), 
-		    	   'imageName' : radio.val()},
 		    success: function(response){
+		    	$('#paymentInfo').html(response)
 		    },
 		    error: function(response){
 		    	alert(response.status);
@@ -42,10 +39,30 @@ $(document).ready(function(){
 		});
 	});
 });
+$(document).ready(function(){
+	$('.primaryImageSelector').change(function(){
+		var radio = $(this)
+		$.ajax({
+			url: '/ShoppingSolutionProject/item/updatePrimaryImage',
+			type: 'GET',
+			async: false,
+			data: {'productNumber' : radio.attr('name').replace('primaryImage',''), 
+				'imageName' : radio.val()},
+				success: function(response){
+				},
+				error: function(response){
+					alert(response.status);
+					return;
+				}
+				
+		});
+	});
+});
 
 $(document).ready(function(){
 	$('#useBillingInfo').click(function(){
-		$("#shippingName").val($("#name").val())
+		$("#shippingFirstName").val($("#firstName").val())
+		$("#shippingLastName").val($("#lastName").val())
 		$("#shippingAddress1").val($("#address1").val())
 		$("#shippingAddress2").val($("#address2").val())
 		$("#shippingCity").val($("#city").val())
@@ -218,6 +235,5 @@ function updateTotal(){
 	var total = 0
 	total += parseFloat($("#subTotalAmmt").text().replace('$',''))
 	total += parseFloat($("#shippingCost").text().replace('$',''))
-	total += parseFloat($("#salesTaxAmmt").text().replace('$',''))
 	$("#totalAmmt").html('$'+total.toFixed(2));
 }

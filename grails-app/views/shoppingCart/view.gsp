@@ -1,5 +1,8 @@
 <meta name="layout" content="main">
-<g:render template="cartOptions"></g:render>
+<div id = "cartButtons" class = "cart_buttons">
+		<g:link name = "emptyCart" class ="cart_buttons_img empty_cart_link" controller="shoppingCart" action="emptyCart"><input type="button" class="button empty_cart" value="Empty Cart"/></g:link>
+		<g:link name = "checkout" class="right" controller="shoppingCart" action="checkout"><input type="button" class="button empty_cart" value="CHECKOUT"/></g:link>
+</div>
 <div>
 	<table class="products">
 		<thead>
@@ -42,20 +45,26 @@
 				<td/>
 				<td>Shipping:</td>
 				<td><div id="shippingCost"></div></td>
+			<g:if test="${!tax == 0}">
 			<tr id="salesTax">
 				<td/>
 				<td/>
-				<td class="columnWidth3">ZipCode: <g:textField name="zipCode" size="5" maxlength="5"></g:textField></td>
+				<td/>
 				<td class="totalsLabel">Tax:</td>
-				<td><div id="salesTaxAmmt">0</div></td>
+				<td><div id="salesTaxAmmt">${tax}</div></td>
 			</tr>
+			</g:if>
 			<tr id="Total">
 				<td/>
 				<td/>
 				<td/>
-				<td> TOTAL:</td>
-				<td><div id="totalAmmt"</div></td>
+				<td>Pre-Tax TOTAL:</td>
+				<td><div id="totalAmmt"></div></td>
 			</tr>
 		</tbody>
 	</table>
+</div>
+<div id = "cartButtons" class = "cart_buttons">
+		<g:link name = "emptyCart" class ="cart_buttons_img empty_cart_link" controller="shoppingCart" action="emptyCart"><input type="button" class="button empty_cart" value="Empty Cart"/></g:link>
+		<g:link name = "checkout" class="right" controller="shoppingCart" action="checkout"><input type="button" class="button empty_cart" value="CHECKOUT"/></g:link>
 </div>
