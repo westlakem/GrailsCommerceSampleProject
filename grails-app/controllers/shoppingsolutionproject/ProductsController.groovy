@@ -9,7 +9,6 @@ class ProductsController {
 	def list(){
 		def searchParams = params.searchParam
 		def products
-		println(searchParams)
 		if(params.searchParam){
 			if (searchParams.isInteger()){
 				products = Item.findAllByProductNumberLike("%${searchParams}%")			

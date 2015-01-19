@@ -1,5 +1,8 @@
 package shoppingsolutionproject
 
+import com.twocheckout.model.Authorization
+import com.twocheckout.Twocheckout
+import com.twocheckout.TwocheckoutCharge
 import java.util.List;
 import net.authorize.sim.*
 
@@ -115,10 +118,13 @@ class ShoppingCartController {
 		
 	}
 	
-	def authorize2CoCheckout(){
+	def twoCheckoutCheckout(){
+
+		def totalPrice
+		def confirmationNumber
 		
-		/*Twocheckout.privatekey = "3508079E-5383-44D4-BF69-DC619C0D9811";
-		// Twocheckout.mode = "sandbox";    #Uncomment to use Sandbox
+		Twocheckout.privatekey = grailsApplication.config.shoppingService.twoCheckout.privateKey;
+		Twocheckout.mode = grailsApplication.config.shoppingService.twoCheckout.environment;
 		
 		try {
 			HashMap billing = new HashMap();
@@ -132,18 +138,27 @@ class ShoppingCartController {
 			billing.put("phoneNumber", "555-555-5555");
 		
 			HashMap request = new HashMap();
-			request.put("sellerId", "1817037");
+			request.put("sellerId", grailsApplication.config.shoppingService.twoCheckout.sellerId);
 			request.put("merchantOrderId", "test123");
-			request.put("token", "MGI4OTU0OTQtMDIxNi00YThlLTliOTctZjg1YmJiMzg0MjA3");
+			request.put("token", params.token);
 			request.put("currency", "USD");
 			request.put("total", "1.00");
 			request.put("billingAddr", billing);
 		
 			Authorization response = TwocheckoutCharge.authorize(request);
-			String message = response.getResponseMsg();
+			confirmationNumber = response.getOrderNumber()
+			totalPrice = request.total
+			def itemizedPurchase = []
+			def cart = shoppingCartItems()
+			cart.each() {item ->
+				def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
+				itemizedPurchase.add(productNumber : item.productInfo['productNumber'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
+			}
+			CompletedTransactions ct = new CompletedTransactions(name: billing.name, totalPrice:totalPrice, confirmationNumber:confirmationNumber, itemizedPurchase: itemizedPurchase).save(flush:true)
 		} catch (Exception e) {
 			String message = e.toString();
-		}*/
+		}
+		[purchasePrice:totalPrice, confirmationNumber:confirmationNumber]
 	}
 	
 	def addToCart(){
@@ -163,8 +178,6 @@ class ShoppingCartController {
 		render(cartHasItem)
 	}
 	
-
-
 	def removeFromCart(){
 		def product = Item.findByProductNumber(params.productNumber)
 		def qty = shoppingCartService.getQuantity(product)

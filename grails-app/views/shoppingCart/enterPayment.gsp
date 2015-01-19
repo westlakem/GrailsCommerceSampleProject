@@ -1,24 +1,22 @@
-<script type="text/javascript" src="https://www.2checkout.com/checkout/api/2co.min.js"></script>
-
 <g:form name="myCCForm" action="authorize2CoCheckout">
   <input name="token" type="hidden" value="" />
   <div class= 'table'>
 	  <div class="row">
 	    <div class="cell">Card Number</div>
-	    <div class="cell"><input id="ccNo" type="text" value="" autocomplete="off" required size="16" maxlength="16" /></div>
+	    <div class="cell"><input id="ccNo" type="text" value="4000000000000002" autocomplete="off" required size="16" maxlength="16" /></div>
 	  </div>
 	  <div class="row">
 	      <div class="cell">Expiration Date <br>(MM/YYYY)</div>
-	      <div class="cell"><input id="expMonth" type="text" size="2" maxlength="2" required />
+	      <div class="cell"><input value = "10" id="expMonth" type="text" size="2" maxlength="2" required />
 	    <span> / </span>
-	    <input id="expYear" type="text" size="4" maxlength="4" required /></div>
+	    <input id="expYear" type="text" size="4" maxlength="4" value="2016" required /></div>
 	  </div>
 	  <div class = "row">
 	      <div class="cell">CVC</div>
-	      <div class="cell"><input id="cvv" type="text" value="" autocomplete="off" size="3" maxlength = "3" required /></div>
+	      <div class="cell"><input value="776" id="cvv" type="text" value="" autocomplete="off" size="3" maxlength = "3" required /></div>
 	  </div>
   </div>
-  <g:submitButton name="submit" value="Submit Payment" />
+  <g:submitButton name="sub" value="Submit Payment" />
 </g:form>
 
 <script>
@@ -46,8 +44,8 @@
   var tokenRequest = function() {
     // Setup token request arguments
     var args = {
-      sellerId: "1817037",
-      publishableKey: ${grailsApplication.config.shoppingService.twoCheckout.publicKey},
+      sellerId: '${grailsApplication.config.shoppingService.twoCheckout.sellerId}',
+      publishableKey: '${grailsApplication.config.shoppingService.twoCheckout.publicKey}',
       ccNo: $("#ccNo").val(),
       cvv: $("#cvv").val(),
       expMonth: $("#expMonth").val(),
@@ -60,7 +58,7 @@
 
   $(function() {
     // Pull in the public encryption key for our environment
-    TCO.loadPubKey('production');
+    TCO.loadPubKey('${grailsApplication.config.shoppingService.twoCheckout.environment}');
 
     $("#myCCForm").submit(function(e) {
       // Call our token request function

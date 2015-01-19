@@ -57,10 +57,5 @@
 			</tr>
 		</tbody>
 	</table>
-	<g:form>
-		<g:actionSubmit name="payNow" value="Pay Now!" action="authorizeDotNetCheckout"/>
-		<g:actionSubmitImage name="authorizeDotNetPaypalCheckout" value="checkout with paypal" src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_checkout_pp_142x27.png"/>
-		<g:actionSubmitImage name="authorize2CoPaypalCheckout" value="checkout with paypal" src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_checkout_pp_142x27.png"/>
-	</g:form>
-		<button type = "button" id = '2COPayment'>Pay Now!</button>
+	<g:render template="${grailsApplication.config.shoppingService.paymentProvider}"/>
 </div>

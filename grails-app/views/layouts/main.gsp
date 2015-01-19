@@ -16,6 +16,7 @@
 		<asset:javascript src="application.js"/>
 		<asset:javascript src="uploadr.manifest.js"/>
     	<asset:stylesheet href="uploadr.manifest.css"/>
+    	<script type="text/javascript" src="https://www.2checkout.com/checkout/api/2co.min.js" type="text/javascript"></script>
 		<g:layoutHead/>
 	</head>
 	<body>
