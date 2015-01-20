@@ -50,11 +50,14 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
         // runtime 'mysql:mysql-connector-java:5.1.29'
         // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
-        test "org.grails:grails-datastore-test-support:1.0-grails-2.4"
 		compile "net.authorize:anet-java-sdk:1.8.1"
 		compile 'org.apache.httpcomponents:httpclient:4.3.6'
 		compile 'org.apache.httpcomponents:httpcore:jar:4.4'
 		compile 'com.google.code.gson:gson:2.2.3'
+		
+		test "org.grails:grails-datastore-test-support:1.0-grails-2.4"
+		test ("org.codehaus.geb:geb-junit4:0.7.2")
+		test("org.seleniumhq.selenium:selenium-firefox-driver:2.44.0")
     }
 
     plugins {
@@ -69,6 +72,9 @@ grails.project.dependency.resolution = {
 		compile ":uploadr:1.1.1"
 		compile ":cxf-client:2.0.3"
 		compile ":spring-security-core:2.0-RC4"
+		//testing
+		compile ":geb:0.10.0"
+		compile ":cucumber:1.0.1"
 
         // plugins needed at runtime but not for compilation
         runtime ":hibernate4:4.3.5.5" // or ":hibernate:3.6.10.17"

@@ -7,3 +7,5 @@ shoppingService.taxCloud.uspsUserId = '380NONEY4790'
 shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
 
 Licensing: BSD????
+
+paypal checkout for both providers

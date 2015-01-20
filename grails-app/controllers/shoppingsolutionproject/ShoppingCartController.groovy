@@ -81,10 +81,6 @@ class ShoppingCartController {
 		def shippingCost
 		(subTotal, shippingCost) = getCartSubtotal(cart)
 		def cartItems = compileArrayOfCartItem(cart)
-		def originAddress = grailsApplication.config.shoppingService.taxCloud.origin
-		Address origin = new Address(address1:originAddress.address1, address2:originAddress.address2 , city:originAddress.city, state:originAddress.state, zip5:originAddress.zip, zip4:'')
-		Address billingAddress = session.getAttribute('billingAddress')
-		Address shippingAddress = session.getAttribute('shippingAddress')
 		def taxAmmt = getTaxAmmount(cartItems).round(2)
 		def totalPrice = (subTotal + shippingCost + taxAmmt).toString()
 		
@@ -98,20 +94,10 @@ class ShoppingCartController {
 		long x_fp_timestamp = fingerprint.getTimeStamp(	);
 		String x_fp_hash = fingerprint.getFingerprintHash();
 		
-		redirect(url:'https://test.authorize.net/gateway/transact.dll', params:[
-			x_login: grailsApplication.config.shoppingService.authorizeDotNet.apiLoginID,
-			x_fp_sequence: x_fp_sequence,
-			x_fp_timestamp: x_fp_timestamp,
-			x_fp_hash: x_fp_hash,
-			x_version: 3.1,
-			x_method: 'CC',
-			x_type: 'AUTH_CAPTURE',
-			x_amount: totalPrice,
-			x_show_form: 'payment_form',
-			x_test_request: 'TRUE'])
+		[fingerprint: fingerprint, totalPrice: totalPrice]
 	}
 	
-	def enterPayment(){
+	def enter2CoPayment(){
 		
 	}
 	

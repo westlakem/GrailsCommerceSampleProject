@@ -26,7 +26,7 @@ $(document).ready( function() {
 $(document).ready(function(){
 	$('#2COPayment').click(function(){
 		$.ajax({
-		    url: '/ShoppingSolutionProject/shoppingCart/enterPayment',
+		    url: '/ShoppingSolutionProject/shoppingCart/enter2CoPayment',
 		    type: 'GET',
 		    success: function(response){
 		    	$('#paymentInfo').html(response)
