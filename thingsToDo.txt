@@ -9,3 +9,8 @@ shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2
 Licensing: BSD????
 
 paypal checkout for both providers
+
+2Co:
+  Include orderNumber, & transactionId in the Invoice for returns purposes.
+  Include LiteItems in the sale for Refund LineItem
+  
