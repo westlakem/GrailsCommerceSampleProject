@@ -1,4 +1,4 @@
-<g:form name="myCCForm" action="authorize2CoCheckout">
+<g:form name="myCCForm" action="twoCheckoutCheckout">
   <input name="token" type="hidden" value="" />
   <div class= 'table'>
 	  <div class="row">

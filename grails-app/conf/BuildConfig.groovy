@@ -68,6 +68,7 @@ grails.project.dependency.resolution = {
 		compile ":shopping-cart:0.8.2"
 		compile ":uploadr:1.1.1"
 		compile ":cxf-client:2.0.3"
+		compile ":spring-security-core:2.0-RC4"
 
         // plugins needed at runtime but not for compilation
         runtime ":hibernate4:4.3.5.5" // or ":hibernate:3.6.10.17"

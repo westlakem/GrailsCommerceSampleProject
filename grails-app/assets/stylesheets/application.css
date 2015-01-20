@@ -35,6 +35,16 @@ h2{padding: 10px 0px}
 /* images */
 .itemImage{float:left; margin: 5px; padding: 5px; border: 1px solid black}
 
+.paypalCheckout{
+	background-image:url(https://www.paypalobjects.com/webstatic/en_US/btn/btn_checkout_pp_142x27.png);
+	background-repeat: no-repeat;
+	border: 0px;
+	background-color: none;
+	cursor: pointer;
+	width:145px;
+	height: 30px;
+}
+
 /* buttons */
 .add_to_cart{background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#008080), to(#008080));
 background-color: #008080; color: #ffffff;

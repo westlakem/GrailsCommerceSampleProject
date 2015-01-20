@@ -48,8 +48,6 @@ class ShoppingCartController {
 		def shippingCost
 		(subtotal, shippingCost) = getCartSubtotal(cart)
 		def cartItems
-		def originAddress = grailsApplication.config.shoppingService.taxCloud.origin
-		    Address origin = new Address(address1:originAddress.address1, address2:originAddress.address2 , city:originAddress.city, state:originAddress.state, zip5:originAddress.zip, zip4:'')
 		Address billingAddress = new Address(
 			address1: params.address1, address2: params.address2, 
 			city: params.city, state: params.state, zip5:params.zip, zip4:'')
@@ -67,10 +65,12 @@ class ShoppingCartController {
 			flash.message = "Invalid Shipping Address Entered"
 			redirect (action:'checkout', params: params)
 		}
-		def taxAmmt = getTaxAmmount(params, cartItems, origin, billingAddress).round(2)
-		def total = taxAmmt + shippingCost + subtotal
 		session.setAttribute('billingAddress', billingAddress)
 		session.setAttribute('shippingAddress', shippingAddress)
+		session.setAttribute('firstName', params.firstName)
+		session.setAttribute('lastName', params.lastName)
+		def taxAmmt = getTaxAmmount(cartItems).round(2)
+		def total = taxAmmt + shippingCost + subtotal
 		[cart:cart, tax:taxAmmt, totalCost: total, name:params.name]
 	}
 
@@ -85,11 +85,8 @@ class ShoppingCartController {
 		Address origin = new Address(address1:originAddress.address1, address2:originAddress.address2 , city:originAddress.city, state:originAddress.state, zip5:originAddress.zip, zip4:'')
 		Address billingAddress = session.getAttribute('billingAddress')
 		Address shippingAddress = session.getAttribute('shippingAddress')
-		def taxAmmt = getTaxAmmount(params, cartItems, origin, billingAddress)
+		def taxAmmt = getTaxAmmount(cartItems).round(2)
 		def totalPrice = (subTotal + shippingCost + taxAmmt).toString()
-		
-		println(grailsApplication.config.shoppingService.authorizeDotNet.apiLoginID + "\n" +
-		  grailsApplication.config.shoppingService.authorizeDotNet.transactionKey)
 		
 		Fingerprint fingerprint = Fingerprint.createFingerprint(
 		  grailsApplication.config.shoppingService.authorizeDotNet.apiLoginID,
@@ -120,13 +117,17 @@ class ShoppingCartController {
 	
 	def twoCheckoutCheckout(){
 
-		def totalPrice
+		def subTotal 
+		def shippingCost
+		def taxAmmt
 		def confirmationNumber
+		def cart = shoppingCartItems()
+		Invoice customerInvoice
 		
 		Twocheckout.privatekey = grailsApplication.config.shoppingService.twoCheckout.privateKey;
 		Twocheckout.mode = grailsApplication.config.shoppingService.twoCheckout.environment;
 		
-		try {
+//		try {
 			HashMap billing = new HashMap();
 			billing.put("name", "Testing Tester");
 			billing.put("addrLine1", "xvxcvxcvxcvcx");
@@ -147,18 +148,21 @@ class ShoppingCartController {
 		
 			Authorization response = TwocheckoutCharge.authorize(request);
 			confirmationNumber = response.getOrderNumber()
-			totalPrice = request.total
-			def itemizedPurchase = []
-			def cart = shoppingCartItems()
+			(subTotal, shippingCost) = getCartSubtotal(cart)
+			taxAmmt = getTaxAmmount(compileArrayOfCartItem(cart))
+			customerInvoice = new Invoice(name: billing.name, shippingCost: shippingCost, subTotal: subTotal, tax: taxAmmt, confirmationNumber:confirmationNumber, fulfilled: false).save(flush:true)
 			cart.each() {item ->
 				def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
-				itemizedPurchase.add(productNumber : item.productInfo['productNumber'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
+				def invoiceItem = new InvoiceItem(productNumber : item.productInfo['productNumber'], name: item.productInfo['name'], description: item.productInfo['description'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
+				println invoiceItem
+				customerInvoice.addToInvoiceItems(invoiceItem).save(flush: true)
 			}
-			CompletedTransactions ct = new CompletedTransactions(name: billing.name, totalPrice:totalPrice, confirmationNumber:confirmationNumber, itemizedPurchase: itemizedPurchase).save(flush:true)
-		} catch (Exception e) {
-			String message = e.toString();
-		}
-		[purchasePrice:totalPrice, confirmationNumber:confirmationNumber]
+			//TODO: add order to customer and save
+//		} catch (Exception e) {
+//			String message = e.toString();
+//			println message
+//		}
+		[customerInvoice: customerInvoice]
 	}
 	
 	def addToCart(){
@@ -300,19 +304,30 @@ class ShoppingCartController {
 			subTotal += (itemPrice * quantity)
 			def itemShipping = item.productInfo['shippingCost'] 
 			if (itemShipping){
-				shippingCost += (itemShipping) 				
+				shippingCost += (itemShipping) *item.qty		
 			}
 		}
 		return [subTotal, shippingCost] 
 	}
 	
-	private double getTaxAmmount(Map params, ArrayOfCartItem cartItems, Address origin, Address billingAddress) {
-		LookupRsp lookUpResponse = taxCloud.lookup(grailsApplication.config.shoppingService.taxCloud.loginId, grailsApplication.config.shoppingService.taxCloud.apiKey,
-				params.name, params.name+new Date().getDateTimeString(), cartItems, origin, billingAddress, true, null)
-				def taxAmmts = lookUpResponse.cartItemsResponse.cartItemResponse.taxAmount
-				def taxAmmt = 0
-				taxAmmts.each {tax ->
-				taxAmmt += tax
+	private double getTaxAmmount(ArrayOfCartItem cartItems) {
+		def originAddress = grailsApplication.config.shoppingService.taxCloud.origin
+		Address origin = new Address(address1:originAddress.address1, address2:originAddress.address2 , city:originAddress.city, state:originAddress.state, zip5:originAddress.zip, zip4:'')
+		
+		LookupRsp lookUpResponse = taxCloud.lookup(
+			grailsApplication.config.shoppingService.taxCloud.loginId, 
+			grailsApplication.config.shoppingService.taxCloud.apiKey,
+			session.getAttribute('firstName')+session.getAttribute('lastName'), 
+			session.getAttribute('firstName')+session.getAttribute('lastName')+new Date().getDateTimeString(), 
+			cartItems, 
+			origin, 
+			session.getAttribute('billingAddress'), 
+			true, //delivered by seller 
+			null) // tax exempt #
+		def taxAmmts = lookUpResponse.cartItemsResponse.cartItemResponse.taxAmount
+		def taxAmmt = 0
+		taxAmmts.each {tax ->
+			taxAmmt += tax
 		}
 		return taxAmmt
 	}

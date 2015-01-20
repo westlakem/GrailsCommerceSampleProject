@@ -21,6 +21,12 @@
 	</head>
 	<body>
 		<div id="grailsLogo" role="banner"><a href="http://grails.org"><asset:image src="grails_logo.png" alt="Grails"/></a></div>
+		<sec:ifLoggedIn>
+			Welcome Back <sec:username/>! (<g:link controller='logout'>Logout</g:link>)
+			</sec:ifLoggedIn>
+		<sec:ifNotLoggedIn>
+			<g:link controller='login' action='auth'>Login</g:link>
+		</sec:ifNotLoggedIn>
 		<div class= "body">
 		<g:layoutBody/>
 		</div>
