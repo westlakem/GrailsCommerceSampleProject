@@ -1,6 +1,13 @@
 <meta name="layout" content="main">
 <div id="paymentInfo"></div>
 <div>
+	<g:form name="enterPayment" action="enterPayment">
+		<input type="hidden" name="invoiceNumber" value="${invoice.id}"
+		<g:submitButton value="Pay Now!" name="submitForPayment"/>
+	</g:form>
+		<button type="button" name="submit" class = "paypalCheckout" value=""></button>
+	</div>
+	
 	<table class="products">
 		<thead>
 			<tr>
@@ -40,7 +47,7 @@
 				<td/>
 				<td/>
 				<td>Shipping:</td>
-				<td><div id="shippingCost"></div></td>
+				<td><div id="shipping"></div></td>
 			<tr id="salesTax">
 				<td/>
 				<td/>
@@ -57,5 +64,10 @@
 			</tr>
 		</tbody>
 	</table>
-	<g:render template="${grailsApplication.config.shoppingService.paymentProvider}"/>
+	<g:form name="enterPayment" action="enterPayment">
+		<input type="hidden" name="invoiceNumber" value="${invoice.id}"
+		<g:submitButton value="Pay Now!" name="submitForPayment"/>
+	</g:form>
+		<button type="button" name="submit" class = "paypalCheckout" value=""></button>
+	</div>
 </div>

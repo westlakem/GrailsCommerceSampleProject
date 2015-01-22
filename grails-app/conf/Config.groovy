@@ -128,35 +128,6 @@ environments {
 		
 		// Added by the Spring Security Core plugin:
 		
-		grails.plugin.springsecurity.rejectIfNoRule = true
-		grails.plugin.springsecurity.fii.rejectPublicInvocations = true
-		
-		grails.plugin.springsecurity.logout.postOnly = false
-		grails.plugin.springsecurity.password.bcrypt.logrounds = 15
-		grails.plugin.springsecurity.roleHierarchy = '''
-			ROLE_ADMIN > ROLE_EMPLOYEE'''
-		grails.plugin.springsecurity.userLookup.userDomainClassName = 'shoppingsolutionproject.User'
-		grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'shoppingsolutionproject.UserRole'
-		grails.plugin.springsecurity.authority.className = 'shoppingsolutionproject.Role'
-		grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
-		grails.plugin.springsecurity.interceptUrlMap = [
-			'/':                              ['permitAll'],
-			'/index':                         ['permitAll'],
-			'/index.gsp':                     ['permitAll'],
-			'/assets/**':                     ['permitAll'],
-			'/**/js/**':                      ['permitAll'],
-			'/**/css/**':                     ['permitAll'],
-			'/**/images/**':                  ['permitAll'],
-			'/**/favicon.ico':                ['permitAll'],
-			'/login/**':						  ['permitAll'],
-			'/logout/**':						  ['permitAll'],
-			'/products/**':						  ['permitAll'],
-			'/shoppingCart/**':					  ['permitAll'],
-			'/category/**': 				  ['ROLE_EMPLOYEE'],
-			'/invoice/**':					  ['ROLE_EMPLOYEE'],
-			'/item/**':						  ['ROLE_EMPLOYEE'],
-			'/user/**':						  ['ROLE_ADMIN']
-			]
     }
 	test{
 		
@@ -168,36 +139,6 @@ environments {
         grails.logging.jul.usebridge = false
         // TODO: grails.serverURL = "http://www.changeme.com"
 		
-		// Added by the Spring Security Core plugin:
-		grails.plugin.springsecurity.rejectIfNoRule = true
-		grails.plugin.springsecurity.fii.rejectPublicInvocations = true
-		
-		grails.plugin.springsecurity.logout.postOnly = false
-		grails.plugin.springsecurity.password.bcrypt.logrounds = 15
-		grails.plugin.springsecurity.roleHierarchy = '''
-			ROLE_ADMIN > ROLE_EMPLOYEE'''
-		grails.plugin.springsecurity.userLookup.userDomainClassName = 'shoppingsolutionproject.User'
-		grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'shoppingsolutionproject.UserRole'
-		grails.plugin.springsecurity.authority.className = 'shoppingsolutionproject.Role'
-		grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
-		grails.plugin.springsecurity.interceptUrlMap = [
-		'/':                              ['permitAll'],
-		'/index':                         ['permitAll'],
-		'/index.gsp':                     ['permitAll'],
-		'/assets/**':                     ['permitAll'],
-		'/**/js/**':                      ['permitAll'],
-		'/**/css/**':                     ['permitAll'],
-		'/**/images/**':                  ['permitAll'],
-		'/**/favicon.ico':                ['permitAll'],
-		'/login/**':						  ['permitAll'],
-		'/logout/**':						  ['permitAll'],
-		'/products/**':						  ['permitAll'],
-		'/shoppingCart/**':					  ['permitAll'],
-		'/category/**': 				  ['ROLE_EMPLOYEE'],
-		'/invoice/**':					  ['ROLE_EMPLOYEE'],
-		'/item/**':						  ['ROLE_EMPLOYEE'],
-		'/user/**':						  ['ROLE_ADMIN']
-		]
     }
 }
 
@@ -223,6 +164,33 @@ log4j.main = {
 }
 
 
+// Added by the Spring Security Core plugin:
+grails.plugin.springsecurity.rejectIfNoRule = true
+grails.plugin.springsecurity.fii.rejectPublicInvocations = true
 
-
-
+grails.plugin.springsecurity.logout.postOnly = false
+grails.plugin.springsecurity.password.bcrypt.logrounds = 15
+grails.plugin.springsecurity.roleHierarchy = '''
+ROLE_ADMIN > ROLE_EMPLOYEE'''
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'shoppingsolutionproject.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'shoppingsolutionproject.UserRole'
+grails.plugin.springsecurity.authority.className = 'shoppingsolutionproject.Role'
+grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
+grails.plugin.springsecurity.interceptUrlMap = [
+                                                '/':                              ['permitAll'],
+                                                '/index':                         ['permitAll'],
+                                                '/index.gsp':                     ['permitAll'],
+                                                '/assets/**':                     ['permitAll'],
+                                                '/**/js/**':                      ['permitAll'],
+                                                '/**/css/**':                     ['permitAll'],
+                                                '/**/images/**':                  ['permitAll'],
+                                                '/**/favicon.ico':                ['permitAll'],
+                                                '/login/**':						  ['permitAll'],
+                                                '/logout/**':						  ['permitAll'],
+                                                '/products/**':						  ['permitAll'],
+                                                '/shoppingCart/**':					  ['permitAll'],
+                                                '/category/**': 				  ['ROLE_EMPLOYEE'],
+                                                '/invoice/**':					  ['ROLE_EMPLOYEE'],
+                                                '/item/**':						  ['ROLE_EMPLOYEE'],
+                                                '/user/**':						  ['ROLE_ADMIN']
+                                                		]
