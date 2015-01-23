@@ -8,8 +8,7 @@ class AuthorizeDotNetService {
 	
 	def cartService
 
-    def authorizeDotNetCheckout(){
-		def cart = cartService.shoppingCartItems()
+    def authorizeDotNetCheckout(cart){
 		def subTotal
 		def shippingCost
 		(subTotal, shippingCost) = getCartSubtotal(cart)

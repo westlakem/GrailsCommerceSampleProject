@@ -13,10 +13,9 @@ class TwoCheckoutService {
 		
 	}
 	
-	def processPayment(invoice, cart){
+	def processPayment(invoice){
 
 		def message
-		
 		
 		Twocheckout.privatekey = grailsApplication.config.shoppingService.twoCheckout.privateKey;
 		Twocheckout.mode = grailsApplication.config.shoppingService.twoCheckout.environment;

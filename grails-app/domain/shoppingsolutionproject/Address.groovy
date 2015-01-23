@@ -7,6 +7,8 @@ class Address {
 	String city
 	String state
 	Integer zipCode
+	
+	static belongsTo = [customer: Customer]
 
     static constraints = {
     }

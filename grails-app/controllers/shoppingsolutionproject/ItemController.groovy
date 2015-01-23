@@ -1,7 +1,5 @@
 package shoppingsolutionproject
 
-import javax.net.ssl.SSLEngineResult.Status;
-
 class ItemController {
 	
 	private def FOLDERLOCATION = 'web-app/images/products/'

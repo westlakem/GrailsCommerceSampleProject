@@ -14,6 +14,8 @@ import grails.transaction.Transactional
 class TaxCloudService {
 	
 	TaxCloudSoap taxCloud
+	
+	def grailsApplication
 
     def addressLookup(address1, address2, city, state, zip){
 		def addressValidationErrors = taxCloud.verifyAddress(

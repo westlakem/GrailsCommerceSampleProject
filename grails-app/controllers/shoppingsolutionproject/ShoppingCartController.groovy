@@ -17,7 +17,7 @@ class ShoppingCartController {
 	def paymentService
 	
 	def view(){
-		def cart = cartService.shoppingCartItems()
+		def cart = cartService.shoppingCartItems(shoppingCartService)
 		[cart:cart]
 	}
 	
@@ -31,7 +31,7 @@ class ShoppingCartController {
 		if (invoice == null){
 			render("I'm sorry, there was a problem accessing your stored cart.  Please empty the cart and try again")
 		}
-		def paymentOutcome = paymentService.processPayment(invoice, cartService.shoppingCartItems())
+		def paymentOutcome = paymentService.processPayment(invoice, cartService.shoppingCartItems(shoppingCartService))
 		if (paymentOutcome != 'SUCCESS'){
 			flash.message = paymentOutcome
 			redirect (action:'enterPayment', params: params)
@@ -40,7 +40,7 @@ class ShoppingCartController {
 	
 	def checkout(){
 		def shippingCost = 0
-		def cart = cartService.shoppingCartItems()
+		def cart = cartService.shoppingCartItems(shoppingCartService)
 		cart.each() {item ->
 			def itemShippingCost = item.productInfo['shippingCost']
 			def salePrice = item.productInfo['salePrice']
@@ -65,7 +65,7 @@ class ShoppingCartController {
 			flash.message = "Invalid Shipping Address Entered"
 			redirect (action:'checkout', params: params)
 		}
-		def cart = cartService.shoppingCartItems()
+		def cart = cartService.shoppingCartItems(shoppingCartService)
 		def subtotal = cartService.subtotal(cart)
 		def taxAmmt = taxService.taxAmmount(cart).round(2)
 		def shippingCost = cartService.shippingCost()
@@ -99,7 +99,7 @@ class ShoppingCartController {
 	
 	def itemInCart(){
 		def cartHasItem = false
-		def cart = cartService.shoppingCartItems()
+		def cart = cartService.shoppingCartItems(shoppingCartService)
 		cart.each() { item ->
 			if (item.productInfo['productNumber'].toString() == params.productNumber.toString()){
 				cartHasItem = true
@@ -112,7 +112,7 @@ class ShoppingCartController {
 		def product = Item.findByProductNumber(params.productNumber)
 		def qty = shoppingCartService.getQuantity(product)
 		shoppingCartService.removeFromShoppingCart(product, qty)
-		def cart = cartService.shoppingCartItems()
+		def cart = cartService.shoppingCartItems(shoppingCartService)
 		render(cart)
 	}
 	
@@ -122,7 +122,7 @@ class ShoppingCartController {
 	}
 	
 	def getShippingCost(){
-		render(cartService.shippingCost().round(2))
+		render(cartService.shippingCost(shoppingCartService).round(2))
 	}
 	
 	def updateQuantity(){

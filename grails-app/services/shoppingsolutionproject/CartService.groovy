@@ -7,11 +7,9 @@ import grails.transaction.Transactional
 @Transactional
 class CartService {
 	
-	def shoppingCartService
-
-    def shoppingCartItems() {
+    def shoppingCartItems(shoppingCartService) {
 		def cart = []
-				def items = getShoppingCart()
+				def items = getShoppingCart(shoppingCartService)
 				if (items == null){
 					items = []
 				}
@@ -22,20 +20,7 @@ class CartService {
 		return cart
 	}
 	
-	def shoppingCart(){
-		def cart = []
-		def items = shoppingCartService.getItems()
-		
-		items?.sort { a, b -> a.id <=> b.id }.each { item ->
-			def itemInfo = ['item': item,
-					'qty':shoppingCartService.getQuantity(item)]
-
-		cart.add(itemInfo)
-		return cart
-		}
-	}
-	
-	def subtotal(List cart) {
+	def subtotal(cart, shoppingCartService) {
 		def subTotal = 0
 		cart.eachWithIndex {item, index ->
 			def salePrice = item.productInfo['salePrice']
@@ -53,9 +38,9 @@ class CartService {
 		return subTotal
 	}
 	
-	def shippingCost(){
+	def shippingCost(shoppingCartService){
 		def shippingCost=0
-		def cart = shoppingCartItems();
+		def cart = shoppingCartItems(shoppingCartService);
 		if (cart.isEmpty()){
 			return 0.00
 		}
@@ -67,7 +52,7 @@ class CartService {
 		return shippingCost
 	}
 	
-	public def getShoppingCart(){
+	private def getShoppingCart(shoppingCartService){
 		def cart = []
 		def items = shoppingCartService.getItems()
 		

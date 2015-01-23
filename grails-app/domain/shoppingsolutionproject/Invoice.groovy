@@ -9,12 +9,12 @@ class Invoice {
 	Integer confirmationNumber
 	Boolean fulfilled
 	Boolean paid
+	Address shippingAddress
+	Address billingAddress
 	
 	Double getTotal(){(shippingCost + subtotal + tax).round(2)}
 	
 	static transients = ['totalCost']
-	
-	static hasOne = [shippingAddress : Address, billingAddress : Address]
 	
 	static hasMany = [invoiceItems : InvoiceItem]
 	

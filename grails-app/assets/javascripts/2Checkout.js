@@ -36,15 +36,15 @@
 
   $(function() {
     // Pull in the public encryption key for our environment
-    TCO.loadPubKey('${grailsApplication.config.shoppingService.twoCheckout.environment}');
     
     $("#submitPayment").click(function(){
+    	TCO.loadPubKey('${grailsApplication.config.shoppingService.twoCheckout.environment}');
 		$("#paymentInfo").html(function(){
 			var ccInfo = $("#creditCardInfo").html()
 			return "<g:form name='myCCForm' action='paymentConfirmation'> \
 			  <input name='token' type='hidden' value='' />" + ccInfo	  
 		})
+		tokenRequest();
 	})
 	
-	tokenRequest();
   });
