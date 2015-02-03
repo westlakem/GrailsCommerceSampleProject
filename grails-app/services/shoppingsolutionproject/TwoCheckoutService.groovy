@@ -9,16 +9,20 @@ import grails.transaction.Transactional
 @Transactional
 class TwoCheckoutService {
 	
-	def generateToken(){
+	def privateKey
+	def environment
+	def sellerId
+	
+	def generateToken(invoice){
 		
 	}
 	
-	def processPayment(invoice){
+	def capturePayment(invoice, params){
 
 		def message
 		
-		Twocheckout.privatekey = grailsApplication.config.shoppingService.twoCheckout.privateKey;
-		Twocheckout.mode = grailsApplication.config.shoppingService.twoCheckout.environment;
+		Twocheckout.privatekey = privateKey;
+		Twocheckout.mode = environment;
 		
 		try {
 			HashMap billing = new HashMap();
@@ -32,7 +36,7 @@ class TwoCheckoutService {
 			billing.put("phoneNumber", "555-555-5555");//TODO: add this from user
 		
 			HashMap request = new HashMap();
-			request.put("sellerId", grailsApplication.config.shoppingService.twoCheckout.sellerId);
+			request.put("sellerId", sellerId);
 			request.put("merchantOrderId", invoice.id);
 			request.put("token", params.token);
 			request.put("currency", "USD");
@@ -40,7 +44,7 @@ class TwoCheckoutService {
 			request.put("billingAddr", billing);
 		
 			Authorization response = TwocheckoutCharge.authorize(request);
-			invoice.confirmationNumber = response.getOrderNumber()
+			invoice.paymentConfirmation = response.getOrderNumber()
 			invoice.paid = true
 			invoice.save(flush: true)
 			//TODO: add order to customer and save
@@ -50,10 +54,6 @@ class TwoCheckoutService {
 		} catch (Exception e) {
 			message = e.toString();
 		}
-		[message: message]
+		return message
 	}
-
-    def serviceMethod() {
-
-    }
 }

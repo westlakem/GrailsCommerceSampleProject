@@ -2,14 +2,11 @@ package shoppingsolutionproject
 
 class Category {
 	
-	String description
+	String name
+	Category parentCategory
 
     static constraints = {
-		description unique:true
+		name unique:true
+		parentCategory nullable:true
     }
-	
-	@Override
-	String toString() {
-		return description
-	}
 }

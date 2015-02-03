@@ -117,10 +117,11 @@ environments {
 		shoppingService.taxCloud.uspsUserId = '380NONEY4790'
 		shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
 		
-//		shoppingService.paymentProvider='authorizeDotNet'
-		shoppingService.paymentProvider='2Checkout'
+		shoppingService.paymentProvider='authorizeDotNet'
 		shoppingService.authorizeDotNet.apiLoginID = '2Pk2Cud93'
 		shoppingService.authorizeDotNet.transactionKey = '695bmUwYe7U93S5q'
+		shoppingService.authorizeDotNet.responseUrl = 'http://65.60.228.234:8080/ShoppingSolutionProject/shoppingCart/paymentAuthorizing'
+		shoppingService.authroizeDotnet.md5Hash = 'thisVeryImportant'
 		shoppingService.twoCheckout.sellerId = '901262262'
 		shoppingService.twoCheckout.publicKey = '47C59E26-C88E-4FAB-A339-451E01EFCE33'
 		shoppingService.twoCheckout.privateKey = '1474E54F-F9BF-4262-A2B5-522CD2E2D62C'
@@ -176,21 +177,24 @@ grails.plugin.springsecurity.userLookup.userDomainClassName = 'shoppingsolutionp
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'shoppingsolutionproject.UserRole'
 grails.plugin.springsecurity.authority.className = 'shoppingsolutionproject.Role'
 grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
+grails.plugin.springsecurity.useSessionFixationPrevention = false //shopping cart is session based.
 grails.plugin.springsecurity.interceptUrlMap = [
-                                                '/':                              ['permitAll'],
-                                                '/index':                         ['permitAll'],
-                                                '/index.gsp':                     ['permitAll'],
-                                                '/assets/**':                     ['permitAll'],
-                                                '/**/js/**':                      ['permitAll'],
-                                                '/**/css/**':                     ['permitAll'],
-                                                '/**/images/**':                  ['permitAll'],
-                                                '/**/favicon.ico':                ['permitAll'],
-                                                '/login/**':						  ['permitAll'],
-                                                '/logout/**':						  ['permitAll'],
-                                                '/products/**':						  ['permitAll'],
-                                                '/shoppingCart/**':					  ['permitAll'],
-                                                '/category/**': 				  ['ROLE_EMPLOYEE'],
-                                                '/invoice/**':					  ['ROLE_EMPLOYEE'],
-                                                '/item/**':						  ['ROLE_EMPLOYEE'],
-                                                '/user/**':						  ['ROLE_ADMIN']
-                                                		]
+		'/':                              			['permitAll'],
+        '/index':                         			['permitAll'],
+        '/index.gsp':                     			['permitAll'],
+        '/assets/**':                     			['permitAll'],
+        '/**/js/**':                      			['permitAll'],
+        '/**/css/**':                     			['permitAll'],
+        '/**/images/**':                  			['permitAll'],
+        '/**/favicon.ico':                			['permitAll'],
+        '/login/**':						  		['permitAll'],
+        '/logout/**':						  		['permitAll'],
+        '/products/**':						  		['permitAll'],
+        '/shoppingCart/**':					  		['permitAll'],
+        '/category/**': 				  			['ROLE_EMPLOYEE'],
+        '/invoice/**':					  			['ROLE_EMPLOYEE'],
+        '/item/**':						  			['ROLE_EMPLOYEE'],
+        '/user/**':						  			['ROLE_ADMIN'],
+		'/dbconsole/**':				  			['ROLE_ADMIN'],
+		'/shoppingCart/checkoutAsAuthenticated': 	['isAuthenticated()']
+]

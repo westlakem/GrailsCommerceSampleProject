@@ -13,7 +13,9 @@ class LoginPage extends Page {
 		
 	}
 	
-	def login(username){
-		
+	def login(user){
+		$("form").j_username = user
+		$("form").j_password = 'password'
+		$("input", id: 'submit').click()
 	}
 }

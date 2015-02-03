@@ -9,8 +9,9 @@ class BootStrap {
 	def dataSource
 
     def init = { servletContext ->
-		def car = new Category(description: 'Car').save()
-		def truck = new Category(description: 'Truck').save()
+    	def vehicle = new Category(name: 'Vehicle').save()
+		def car = new Category(name: 'Car', parentCategory: vehicle).save()
+		def truck = new Category(name: 'Truck', parentCategory: vehicle).save()
 		new Item(productNumber:1, name:"First Product", description: "This is the first product I'm adding for testing",
 				 shippingCost: 4.99, url: '/first', retailPrice: 19.99, salePrice: 16.99, category: car).save(failOnError: true)
 		new Item(productNumber:2, name:"Second Product", description: "This is the second product I'm adding for testing",

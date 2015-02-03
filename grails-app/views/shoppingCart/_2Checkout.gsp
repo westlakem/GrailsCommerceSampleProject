@@ -1,4 +1,5 @@
-  // Called when token created successfully.
+<script type="text/javascript">
+// Called when token created successfully.
   var successCallback = function(data) {
     var myForm = document.getElementById('myCCForm');
 
@@ -38,13 +39,15 @@
     // Pull in the public encryption key for our environment
     
     $("#submitPayment").click(function(){
-    	TCO.loadPubKey('${grailsApplication.config.shoppingService.twoCheckout.environment}');
-		$("#paymentInfo").html(function(){
-			var ccInfo = $("#creditCardInfo").html()
-			return "<g:form name='myCCForm' action='paymentConfirmation'> \
-			  <input name='token' type='hidden' value='' />" + ccInfo	  
-		})
-		tokenRequest();
-	})
-	
+    	TCO.loadPubKey('${grailsApplication.config.shoppingService.twoCheckout.environment}', function(){
+    		$("#paymentInfo").html(function(){
+    			var ccInfo = $("#creditCardInfo").html()
+    			return "<form hidden id='myCCForm' name='myCCForm' action='paymentConfirmation'> \
+    			<input name='token' type='hidden' value='' />" + ccInfo + "</form>"
+    			
+    		})
+    		tokenRequest();    		
+    	})
+	})	
   });
+</script>

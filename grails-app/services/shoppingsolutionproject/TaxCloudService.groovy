@@ -1,6 +1,7 @@
 package shoppingsolutionproject
 
 import java.util.List;
+import org.codehaus.groovy.grails.web.util.WebUtils
 
 import net.taxcloud.Address;
 import net.taxcloud.ArrayOfCartItem;
@@ -13,31 +14,36 @@ import grails.transaction.Transactional
 @Transactional
 class TaxCloudService {
 	
-	TaxCloudSoap taxCloud
+	def taxCloud
+	def grailsApplication	
+	def shoppingCartService
 	
-	def grailsApplication
+	def uspsUserId
+	def origin
+	def loginId
+	def apiKey
 
-    def addressLookup(address1, address2, city, state, zip){
+    def addressLookup(address){
 		def addressValidationErrors = taxCloud.verifyAddress(
-			grailsApplication.config.shoppingService.taxCloud.uspsUserId,
-			address1, address2, city, state, zip, '')
+			uspsUserId, address.address1, address.address2, address.city, address.state, address.zipCode, '')
 		return addressValidationErrors.errDescription
 	}
 	
-	def taxAmmount(cart) {
+	def taxAmmount(cart, address) {
 		
+		def web = WebUtils.retrieveGrailsWebRequest()
 		def cartItems = compileArrayOfCartItem(cart)
-		def originAddress = grailsApplication.config.shoppingService.taxCloud.origin
+		def originAddress = origin
 		Address origin = new Address(address1:originAddress.address1, address2:originAddress.address2 , city:originAddress.city, state:originAddress.state, zip5:originAddress.zip, zip4:'')
-		
+		def shippingAddress = new Address(address1:address.address1, address2:address.address2, city:address.city, state:address.state, zip5:address.zipCode, zip4:'')
 		LookupRsp lookUpResponse = taxCloud.lookup(
-			grailsApplication.config.shoppingService.taxCloud.loginId,
-			grailsApplication.config.shoppingService.taxCloud.apiKey,
-			session.getAttribute('firstName')+session.getAttribute('lastName'),
-			session.getAttribute('firstName')+session.getAttribute('lastName')+new Date().getDateTimeString(),
+			loginId,
+			apiKey,
+			web.getSession().firstName.toString() + web.getSession().lastName.toString(),
+			web.getSession().firstName.toString() + web.getSession().lastName.toString() + new Date().getDateTimeString(),
 			cartItems,
 			origin,
-			session.getAttribute('shippingAddress'),
+			shippingAddress,
 			true, //delivered by seller
 			null) // tax exempt #
 		def taxAmmts = lookUpResponse.cartItemsResponse.cartItemResponse.taxAmount

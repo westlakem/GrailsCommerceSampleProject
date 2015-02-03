@@ -11,5 +11,7 @@ class Address {
 	static belongsTo = [customer: Customer]
 
     static constraints = {
+		address2 nullable:true
+		customer nullable:true
     }
 }

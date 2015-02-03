@@ -1,16 +1,15 @@
-In config.groovy
+In config.groovy configurations have to be removed.
 
-shoppingService.paymentProvider='2Checkout'
-shoppingService.taxCloud.loginId = '35942020'
-shoppingService.taxCloud.apiKey = '191D12F2-47BB-4612-9A9E-B67B5E64F790'
-shoppingService.taxCloud.uspsUserId = '380NONEY4790'
-shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
-
-Licensing: BSD????
+Licensing: BSD????/MIT????
 
 paypal checkout for both providers
 
 2Co:
   Include orderNumber, & transactionId in the Invoice for returns purposes.
   Include LiteItems in the sale for Refund LineItem
+  
+Authorize.net
+  user will need to establish and account and setup an MD5HashKey
+  
+
   

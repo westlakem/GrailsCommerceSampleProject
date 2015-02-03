@@ -2,7 +2,7 @@
 <div id="paymentInfo"></div>
 <div>
 	<g:form name="enterPayment" action="enterPayment">
-		<input type="hidden" name="invoiceNumber" value="${invoice.id}"
+		<input type="hidden" name="invoiceNumber" value="${invoice.id}">
 		<g:submitButton value="Pay Now!" name="submitForPayment"/>
 	</g:form>
 		<button type="button" name="submit" class = "paypalCheckout" value=""></button>
@@ -40,32 +40,32 @@
 				<td/>
 				<td/>
 				<td>Sub Total:</td>
-				<td><div id="subTotalAmmt"></div></td>
+				<td><div id="subTotal">$${invoice.subtotal}</div></td>
 			</tr>
 			<tr>
 				<td/>
 				<td/>
 				<td/>
 				<td>Shipping:</td>
-				<td><div id="shipping"></div></td>
+				<td><div id="shipping">$${invoice.shippingCost}</div></td>
 			<tr id="salesTax">
 				<td/>
 				<td/>
 				<td/>
 				<td class="totalsLabel">Tax:</td>
-				<td><div id="salesTaxAmmt">$${tax}</div></td>
+				<td><div id="salesTaxAmmt">$${invoice.tax}</div></td>
 			</tr>
 			<tr id="Total">
 				<td/>
 				<td/>
 				<td/>
 				<td> TOTAL:</td>
-				<td><div id="total">$${totalCost}</div></td>
+				<td><div id="total">$${invoice.total}</div></td>
 			</tr>
 		</tbody>
 	</table>
 	<g:form name="enterPayment" action="enterPayment">
-		<input type="hidden" name="invoiceNumber" value="${invoice.id}"
+		<input type="hidden" name="invoiceNumber" value="${invoice.id}">
 		<g:submitButton value="Pay Now!" name="submitForPayment"/>
 	</g:form>
 		<button type="button" name="submit" class = "paypalCheckout" value=""></button>

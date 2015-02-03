@@ -6,7 +6,7 @@ class Invoice {
 	Double shippingCost
 	Double subtotal
 	Double tax
-	Integer confirmationNumber
+	String paymentConfirmation
 	Boolean fulfilled
 	Boolean paid
 	Address shippingAddress
@@ -19,6 +19,6 @@ class Invoice {
 	static hasMany = [invoiceItems : InvoiceItem]
 	
 	static constraints = {
-		confirmationNumber nullable:true
+		paymentConfirmation nullable:true
 	}
 }

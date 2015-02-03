@@ -1,3 +1,4 @@
+<meta name="layout" content="main">
 <div class="error">
 	<g:message code="${flash.message}"/>
 </div>
@@ -18,7 +19,10 @@
 	      <div class="cell">CVC</div>
 	      <div class="cell"><input value="776" id="cvv" type="text" value="" autocomplete="off" size="3" maxlength = "3" required /></div>
 	  </div>
-	  <input type="hidden" name="orderNumber" value="${invoice}"
+	  <input type="hidden" name="invoiceNumber" value="${invoice.id}">
   </div>
 </div>
-<button type="button" id="submitPayment" value="Submit Payment"></button>
+<button type="button" id="submitPayment" value="Submit Payment">Submit Payment</button>
+
+${grailsApplication.config.shoppingService.paymentProvider}
+<g:render template="${grailsApplication.config.shoppingService.paymentProvider}"/>

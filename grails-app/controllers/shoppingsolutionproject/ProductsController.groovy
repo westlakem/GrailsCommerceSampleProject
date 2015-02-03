@@ -22,4 +22,20 @@ class ProductsController {
 		}
 		[products:products]
 	}
+	
+	def listCategories(){
+		def categoryMap = [:]
+		def firstCategories = Category.findAllByParentCategoryIsNull()
+		firstCategories.each(){category ->
+			categoryMap << [(category.name): getChildrenCategories(category)]
+		}
+		return (categoryMap)
+	}
+	
+	private getChildrenCategories(category){
+		Category.findAllByParentCategory(category).each(){childCategory ->
+			return [(childCategory.name):getChildrenCategories(childCategory)]
+		}
+		
+	}
 }

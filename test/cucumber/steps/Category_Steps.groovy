@@ -1,5 +1,7 @@
 import static cucumber.api.groovy.EN.*
 import pages.LoginPage
+import pages.category.AddCategoryPage
+import pages.category.ListCategoryPage
 
 Given(~/^I am an employee$/) { ->
 	to LoginPage
@@ -8,8 +10,15 @@ Given(~/^I am an employee$/) { ->
 	page.login('employee')
 }
 When(~/^I add a category$/) { ->
-	assert false
+	to AddCategoryPage
+	at AddCategoryPage
+	
+	page.addCategory("New Category From Geb")
+	page.submitCategory.click()
 }
-Then(~/^the category is listed with the rest of the categories$/) { ->
-	assert false
+Then(~/^the category is listed with the categories$/) { ->
+	to ListCategoryPage
+	at ListCategoryPage
+	
+	
 }

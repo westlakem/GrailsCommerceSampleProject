@@ -13,7 +13,7 @@ driver = {
 
 baseNavigatorWaiting = true
 atCheckWaiting = true
-baseUrl = 'http://localhost:8080/ShoppingSolutionProject/'
+baseUrl = 'http://localhost:8090/ShoppingSolutionProject/'
 
 if (!System.getProperty("grails.env")) {
 	reportsDir = new File("target/geb-reports")

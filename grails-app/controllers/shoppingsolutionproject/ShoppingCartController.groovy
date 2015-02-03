@@ -1,6 +1,7 @@
 package shoppingsolutionproject
 
 
+import java.math.MathContext
 import java.util.List;
 import net.authorize.sim.*
 
@@ -15,30 +16,69 @@ class ShoppingCartController {
 	def cartService
 	def taxService
 	def paymentService
+	def taxCloud
+	def springSecurityService
 	
 	def view(){
 		def cart = cartService.shoppingCartItems(shoppingCartService)
-		[cart:cart]
+		[cart:cart]	
 	}
 	
 	def enterPayment(){
-		def paymentToken = paymentService.generateToken()
-		[invoiceId : params.invoiceNumber]
+		def invoice = Invoice.get(params.invoiceNumber)
+		def paymentToken
+		if (invoice == null){
+			flash.message = "I'm sorry, there was a problem accessing your stored cart.  Please empty the cart and try again"
+			redirect (action:'view', params: params)
+		}
+		else{
+			paymentToken = paymentService.generateToken(invoice)			
+		}
+		[invoice : invoice, paymentToken:paymentToken]
 	}
 	
-	def paymentConfirmation(){
+	def paymentAuthorizing(){
+		[params: params]
+	}
+	
+	def authorizePayment(){
+		def authSuccess
+		def authorization
 		def invoice = Invoice.get(params.invoiceNumber)
 		if (invoice == null){
-			render("I'm sorry, there was a problem accessing your stored cart.  Please empty the cart and try again")
-		}
-		def paymentOutcome = paymentService.processPayment(invoice, cartService.shoppingCartItems(shoppingCartService))
-		if (paymentOutcome != 'SUCCESS'){
-			flash.message = paymentOutcome
+			flash.message = "I'm sorry, there was a problem accessing your stored cart.  Please empty the cart and try again"
 			redirect (action:'enterPayment', params: params)
+		}
+		else{
+			(authSuccess, authorization) = paymentService.authorizePayment(invoice, params)
+			if (!authSuccess){
+				flash.message = authorization['responseReasonText']
+				redirect (action:'enterPayment', params: params)
+			}
+			else{
+				def paymentOutcome = paymentService.capturePayment(invoice, params)
+				if (paymentOutcome != 'SUCCESS'){
+					flash.message = paymentOutcome
+					redirect (action:'enterPayment', params: params)
+				}
+			shoppingCartService.emptyShoppingCart()
+			}
 		}
 	}
 	
 	def checkout(){
+		if(springSecurityService.isLoggedIn()){
+			chain(action: checkoutAsAuthenticated)
+		}
+	}
+	
+	def checkoutAsAuthenticated(){
+		def user = springSecurityService.getCurrentUser()
+		def customer = Customer.findByUser(user)
+		[customer: customer]
+	}
+	
+	def checkoutAsGuest(){
 		def shippingCost = 0
 		def cart = cartService.shoppingCartItems(shoppingCartService)
 		cart.each() {item ->
@@ -53,41 +93,45 @@ class ShoppingCartController {
 	
 	
 	def review(){
-		
-
-		def addressValidationErrors = taxService.addressLookup(params.address1, params.address2, params.city, params.state, params.zip)
-		def shippingValidationErrors = taxService.addressLookup(params.shippingAddress1, params.shippingAddress2, params.shippingCity, params.shippingState, params.shippingZip)
+		def cart
+		def customerInvoice
+		def shippingAddress
+		def billingAddress
+		def customerName
+		if(springSecurityService.loggedIn()){
+			def user = springSecurityService.getCurrentUser()
+			def customer = Customer.findByUser(user)
+			if (!customer){
+				flash.message = "You must be logged in as a returning customer"
+				redirect(action:'checkoutAsAuthenticated')
+			}
+			shippingAddress = customer.shippingAddresses.get(params.shippingAddressId)
+			billingAddress = customer.billingAddresses.get(params.billingAddressId)
+			customerName = customer.firstName + customer.lastName
+			if(!(shippingAddress && billingAddress)){
+				flash.message = """Billing or shipping address not associated with your account.
+					Please inform us of this error."""
+				redirect(action:'checkoutAsAuthenticated')
+			}
+		}
+		else{
+			shippingAddress = Address.findOrCreateByAddress1AndAddress2AndCityAndStateAndZipCode(
+					params.shippingAddress1, params.shippingAddress2, params.shippingCity, params.shippingState, params.shippingZip).save()
+			billingAddress = Address.findOrCreateByAddress1AndAddress2AndCityAndStateAndZipCode(
+					params.address1, params.address2, params.city, params.state, params.zip).save(flush: true, failOnError: true)
+			customerName = params.firstName+' '+params.lastName
+		} 
+		def addressValidationErrors = taxService.addressLookup(billingAddress)
+		def shippingValidationErrors = taxService.addressLookup(shippingAddress)			
 		if(addressValidationErrors){
 			flash.message = "Invalid Billing Address Entered"
-			redirect (action:'checkout', params:params)
+			redirect (action:'checkoutAsGuest', params:params)
 		}
 		if(shippingValidationErrors && !addressValidationErrors){
 			flash.message = "Invalid Shipping Address Entered"
-			redirect (action:'checkout', params: params)
+			redirect (action:'checkoutAsGuest', params: params)
 		}
-		def cart = cartService.shoppingCartItems(shoppingCartService)
-		def subtotal = cartService.subtotal(cart)
-		def taxAmmt = taxService.taxAmmount(cart).round(2)
-		def shippingCost = cartService.shippingCost()
-		def total = taxAmmt + shippingCost + subtotal
-		Address shippingAddress = Address.findOrCreateBy(
-				address1: params.shippingAddress1, address2: params.shippingAddress2, city: params.shippingCity, state: params.shippingState, zip:params.shippingZip)
-		Address billingAddress = Address.findOrCreateBy(
-				address1: params.address1, address2: params.address2, city: params.city, state: params.state, zip:params.zip)
-		def customerInvoice = new Invoice(
-			name: params.firstName+' '+params.lastName, 
-			subtotal: subtotal, 
-			tax: taxAmmt, 
-			shippingCost: shippingCost, 
-			shippingAddress: shippingAddress,
-			billingAddress: billingAddress,
-			fulfilled: false,
-			paid: false).save(flush:true)
-		cart.each() {item ->
-			def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
-			def invoiceItem = new InvoiceItem(productNumber : item.productInfo['productNumber'], name: item.productInfo['name'], description: item.productInfo['description'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
-			customerInvoice.addToInvoiceItems(invoiceItem).save(flush: true)
-		}
+		(cart, customerInvoice) = createInvoice(customerName, billingAddress, shippingAddress)
 		[cart:cart, invoice: customerInvoice]
 	}
 	
@@ -122,7 +166,7 @@ class ShoppingCartController {
 	}
 	
 	def getShippingCost(){
-		render(cartService.shippingCost(shoppingCartService).round(2))
+		render(String.format("%.2f", cartService.shippingCost(shoppingCartService)))
 	}
 	
 	def updateQuantity(){
@@ -145,5 +189,32 @@ class ShoppingCartController {
 			newPrice = String.format("%.2f", (shoppingCartService.getQuantity(product)*product.retailPrice))
 		}
 		render(newPrice)
+	}
+	
+	def invoiceTotal(){
+		render(Invoice.get(params.invoiceId).total)
+	}
+	private def createInvoice (customerName, billingAddress, shippingAddress){
+		def cart = cartService.shoppingCartItems(shoppingCartService)
+		def subtotal = cartService.subtotal(cart, shoppingCartService)
+		def taxAmmt = taxService.taxAmmount(cart, shippingAddress).round(2)
+		def shippingCost = cartService.shippingCost(shoppingCartService)
+		def total = taxAmmt + shippingCost + subtotal
+		def customerInvoice = new Invoice(
+				name: customerName,
+				subtotal: subtotal,
+				tax: taxAmmt,
+				shippingCost: shippingCost,
+				shippingAddress: shippingAddress,
+				billingAddress: billingAddress,
+				fulfilled: false,
+				paid: false).save(flush:true, failOnError: true)
+				cart.each() {item ->
+				def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
+						def invoiceItem = new InvoiceItem(productNumber : item.productInfo['productNumber'], name: item.productInfo['name'], description: item.productInfo['description'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
+				customerInvoice.addToInvoiceItems(invoiceItem).save()
+		}
+		customerInvoice.save(flush:true)
+		return [cart, customerInvoice]
 	}
 }

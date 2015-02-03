@@ -18,7 +18,6 @@
     	<asset:stylesheet href="uploadr.manifest.css"/>
 		<g:if test="${grailsApplication.config.shoppingService.paymentProvider='2Checkout'}">
     		<script type="text/javascript" src="https://www.2checkout.com/checkout/api/2co.min.js" type="text/javascript"></script>
-    		<asset:javascript src="2Checkout.js"/>
     	</g:if>
 		<g:layoutHead/>
 	</head>
@@ -31,6 +30,7 @@
 			<g:link controller='login' action='auth'>Login</g:link>
 		</sec:ifNotLoggedIn>
 		<div class= "body">
+		<g:render template="/products/categoryNav"></g:render>
 		<g:layoutBody/>
 		</div>
 		<div class="footer" role="contentinfo"></div>
