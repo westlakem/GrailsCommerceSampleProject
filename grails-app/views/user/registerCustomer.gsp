@@ -1,3 +1,7 @@
+<meta name="layout" content="main">
+<div class="error">
+	<g:message code="${flash.message}"/>
+</div>
 <h1>Registration</h1>
 <g:form action="createCustomerRecord">
 	<h2>UserInfo</h2>

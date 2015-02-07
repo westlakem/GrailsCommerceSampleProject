@@ -1,7 +1,10 @@
 <meta name="layout" content="main">
+<div class="error">
+	<g:message code="${flash.message}"/>
+</div>
 <div id = "cartButtons" class = "cart_buttons">
 		<g:link name = "emptyCart" class ="cart_buttons_img empty_cart_link" controller="shoppingCart" action="emptyCart"><input type="button" class="button empty_cart" value="Empty Cart"/></g:link>
-		<g:link name = "checkout" class="right" controller="shoppingCart" action="checkoutAsGuest"><input type="button" class="button empty_cart" value="CHECKOUT"/></g:link>
+		<g:link name = "checkout" class="right" controller="shoppingCart" action="checkout"><input type="button" class="button empty_cart" value="CHECKOUT"/></g:link>
 </div>
 <div>
 	<table class="products">
@@ -66,5 +69,5 @@
 </div>
 <div id = "cartButtons" class = "cart_buttons">
 		<g:link name = "emptyCart" class ="cart_buttons_img empty_cart_link" controller="shoppingCart" action="emptyCart"><input type="button" class="button empty_cart" value="Empty Cart"/></g:link>
-		<g:link name = "checkout" class="right" controller="shoppingCart" action="checkoutAsGuest"><input type="button" class="button empty_cart" value="CHECKOUT"/></g:link>
+		<g:link name = "checkout" class="right" controller="shoppingCart" action="checkout"><input type="button" class="button empty_cart" value="CHECKOUT"/></g:link>
 </div>

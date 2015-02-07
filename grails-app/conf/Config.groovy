@@ -190,11 +190,14 @@ grails.plugin.springsecurity.interceptUrlMap = [
         '/login/**':						  		['permitAll'],
         '/logout/**':						  		['permitAll'],
         '/products/**':						  		['permitAll'],
+		'/shoppingCart/checkoutAsAuthenticated': 	['isAuthenticated()'],
         '/shoppingCart/**':					  		['permitAll'],
         '/category/**': 				  			['ROLE_EMPLOYEE'],
         '/invoice/**':					  			['ROLE_EMPLOYEE'],
         '/item/**':						  			['ROLE_EMPLOYEE'],
+		'/user/registerCustomer':					['permitAll'],
+		'/user/createCustomerRecord':				['permitAll'],
         '/user/**':						  			['ROLE_ADMIN'],
-		'/dbconsole/**':				  			['ROLE_ADMIN'],
-		'/shoppingCart/checkoutAsAuthenticated': 	['isAuthenticated()']
+		'/dbconsole/**':				  			['ROLE_ADMIN']
+		
 ]

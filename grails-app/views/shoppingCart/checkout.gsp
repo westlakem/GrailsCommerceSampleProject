@@ -15,7 +15,7 @@
 </div>
 <div>
 	<p> Don't want an account for speedy checkout?</p>
-	<g:link controller='shoppingCart' actiion='checkoutAsGuest'>
+	<g:link controller='shoppingCart' action='checkoutAsGuest'>
 		<button type="button">Checkout as Guest</button>
 	</g:link>
 </div>

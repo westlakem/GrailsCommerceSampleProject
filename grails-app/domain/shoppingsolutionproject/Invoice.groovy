@@ -11,6 +11,7 @@ class Invoice {
 	Boolean paid
 	Address shippingAddress
 	Address billingAddress
+	Customer customer
 	
 	Double getTotal(){(shippingCost + subtotal + tax).round(2)}
 	
@@ -20,5 +21,6 @@ class Invoice {
 	
 	static constraints = {
 		paymentConfirmation nullable:true
+		customer nullable:true
 	}
 }

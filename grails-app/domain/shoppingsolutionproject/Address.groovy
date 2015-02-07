@@ -7,11 +7,10 @@ class Address {
 	String city
 	String state
 	Integer zipCode
-	
-	static belongsTo = [customer: Customer]
 
     static constraints = {
 		address2 nullable:true
-		customer nullable:true
     }
+	
+	static belongsTo = [shippingAddress: ShippingAddress, billingAddress: BillingAddress]
 }

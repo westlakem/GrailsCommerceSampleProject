@@ -68,13 +68,17 @@ class ShoppingCartController {
 	
 	def checkout(){
 		if(springSecurityService.isLoggedIn()){
-			chain(action: checkoutAsAuthenticated)
+			chain(action: 'checkoutAsAuthenticated')
 		}
 	}
 	
 	def checkoutAsAuthenticated(){
 		def user = springSecurityService.getCurrentUser()
 		def customer = Customer.findByUser(user)
+		if (customer==null){
+			flash.message = 'Must be logged in as a customer or a guest to checkout'
+			redirect(action: 'view')
+		}
 		[customer: customer]
 	}
 	
@@ -98,15 +102,15 @@ class ShoppingCartController {
 		def shippingAddress
 		def billingAddress
 		def customerName
-		if(springSecurityService.loggedIn()){
+		if(springSecurityService.isLoggedIn()){
 			def user = springSecurityService.getCurrentUser()
 			def customer = Customer.findByUser(user)
 			if (!customer){
 				flash.message = "You must be logged in as a returning customer"
 				redirect(action:'checkoutAsAuthenticated')
 			}
-			shippingAddress = customer.shippingAddresses.get(params.shippingAddressId)
-			billingAddress = customer.billingAddresses.get(params.billingAddressId)
+			shippingAddress = ShippingAddress.findByIdAndCustomer(params.shippingAddress, customer)
+			billingAddress = BillingAddress.findByIdAndCustomer(params.billingAddress, customer)
 			customerName = customer.firstName + customer.lastName
 			if(!(shippingAddress && billingAddress)){
 				flash.message = """Billing or shipping address not associated with your account.
@@ -195,6 +199,8 @@ class ShoppingCartController {
 		render(Invoice.get(params.invoiceId).total)
 	}
 	private def createInvoice (customerName, billingAddress, shippingAddress){
+		def user = springSecurityService.isLoggedIn()? springSecurityService.loadCurrentUser() : null
+		def customer = user? Customer.findByUser(user) : null
 		def cart = cartService.shoppingCartItems(shoppingCartService)
 		def subtotal = cartService.subtotal(cart, shoppingCartService)
 		def taxAmmt = taxService.taxAmmount(cart, shippingAddress).round(2)
@@ -208,11 +214,12 @@ class ShoppingCartController {
 				shippingAddress: shippingAddress,
 				billingAddress: billingAddress,
 				fulfilled: false,
+				customer: customer,
 				paid: false).save(flush:true, failOnError: true)
-				cart.each() {item ->
-				def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
-						def invoiceItem = new InvoiceItem(productNumber : item.productInfo['productNumber'], name: item.productInfo['name'], description: item.productInfo['description'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
-				customerInvoice.addToInvoiceItems(invoiceItem).save()
+		cart.each() {item ->
+			def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
+			def invoiceItem = new InvoiceItem(productNumber : item.productInfo['productNumber'], name: item.productInfo['name'], description: item.productInfo['description'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))
+			customerInvoice.addToInvoiceItems(invoiceItem).save()
 		}
 		customerInvoice.save(flush:true)
 		return [cart, customerInvoice]

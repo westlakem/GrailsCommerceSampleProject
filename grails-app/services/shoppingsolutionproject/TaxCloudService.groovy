@@ -25,7 +25,7 @@ class TaxCloudService {
 
     def addressLookup(address){
 		def addressValidationErrors = taxCloud.verifyAddress(
-			uspsUserId, address.address1, address.address2, address.city, address.state, address.zipCode, '')
+			uspsUserId, address.address1, address.address2, address.city, address.state, address.zipCode.toString(), '')
 		return addressValidationErrors.errDescription
 	}
 	
