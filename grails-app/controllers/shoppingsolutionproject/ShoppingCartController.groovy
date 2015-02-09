@@ -29,7 +29,6 @@ class ShoppingCartController {
 		def paymentToken
 		if (invoice == null){
 			flash.message = "I'm sorry, there was a problem accessing your stored cart.  Please empty the cart and try again"
-			redirect (action:'view', params: params)
 		}
 		else{
 			paymentToken = paymentService.generateToken(invoice)			
@@ -44,24 +43,23 @@ class ShoppingCartController {
 	def authorizePayment(){
 		def authSuccess
 		def authorization
-		def invoice = Invoice.get(params.invoiceNumber)
-		if (invoice == null){
-			flash.message = "I'm sorry, there was a problem accessing your stored cart.  Please empty the cart and try again"
-			redirect (action:'enterPayment', params: params)
+		def authorizationMessage
+		(authSuccess, authorization, authorizationMessage) = paymentService.authorizeAndCapturePayment(request)
+		if (!authSuccess){
+			flash.message = authorizationMessage
 		}
 		else{
-			(authSuccess, authorization) = paymentService.authorizePayment(invoice, params)
-			if (!authSuccess){
-				flash.message = authorization['responseReasonText']
-				redirect (action:'enterPayment', params: params)
+			shoppingCartService.emptyShoppingCart()
+			println(params)
+			def invoice = Invoice.get(authorization.invoiceId)
+			if ((invoice == null) || (invoice.paid == true) || (invoice.total.toString() != authorization['paymentAmount'])){
+				flash.message = "Payment has been processed but there was a problem processing your order."
 			}
 			else{
-				def paymentOutcome = paymentService.capturePayment(invoice, params)
-				if (paymentOutcome != 'SUCCESS'){
-					flash.message = paymentOutcome
-					redirect (action:'enterPayment', params: params)
-				}
-			shoppingCartService.emptyShoppingCart()
+				invoice.paid = true
+				invoice.paymentTrasactionId = authorization.transactionId
+				invoice.save(flush:true)
+				flash.message = "Thank you for your purchase"
 			}
 		}
 	}
@@ -109,9 +107,11 @@ class ShoppingCartController {
 				flash.message = "You must be logged in as a returning customer"
 				redirect(action:'checkoutAsAuthenticated')
 			}
-			shippingAddress = ShippingAddress.findByIdAndCustomer(params.shippingAddress, customer)
-			billingAddress = BillingAddress.findByIdAndCustomer(params.billingAddress, customer)
-			customerName = customer.firstName + customer.lastName
+			def sAddress = Address.get(params.shippingAddress)
+			def bAddress = Address.get(params.billingAddress)
+			shippingAddress = CustomerShippingAddress.findByAddressAndCustomer(sAddress, customer).address // validates address belongs to customer
+			billingAddress = CustomerBillingAddress.findByAddressAndCustomer(bAddress, customer).address // validates address belogns to customer
+			customerName = customer.firstName +' ' + customer.lastName
 			if(!(shippingAddress && billingAddress)){
 				flash.message = """Billing or shipping address not associated with your account.
 					Please inform us of this error."""
@@ -120,7 +120,7 @@ class ShoppingCartController {
 		}
 		else{
 			shippingAddress = Address.findOrCreateByAddress1AndAddress2AndCityAndStateAndZipCode(
-					params.shippingAddress1, params.shippingAddress2, params.shippingCity, params.shippingState, params.shippingZip).save()
+					params.shippingAddress1, params.shippingAddress2, params.shippingCity, params.shippingState, params.shippingZip).save(flush:true)
 			billingAddress = Address.findOrCreateByAddress1AndAddress2AndCityAndStateAndZipCode(
 					params.address1, params.address2, params.city, params.state, params.zip).save(flush: true, failOnError: true)
 			customerName = params.firstName+' '+params.lastName

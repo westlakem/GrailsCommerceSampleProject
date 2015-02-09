@@ -47,7 +47,7 @@ class TaxCloudService {
 			true, //delivered by seller
 			null) // tax exempt #
 		def taxAmmts = lookUpResponse.cartItemsResponse.cartItemResponse.taxAmount
-		def taxAmmt = 0.00
+		Double taxAmmt = 0.00
 		taxAmmts.each {tax ->
 			taxAmmt += tax
 		}

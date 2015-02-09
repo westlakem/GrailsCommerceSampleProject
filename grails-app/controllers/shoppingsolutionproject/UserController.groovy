@@ -1,5 +1,7 @@
 package shoppingsolutionproject
 
+import org.junit.internal.runners.statements.FailOnTimeout;
+
 class UserController {
 	
 	def taxService
@@ -11,8 +13,8 @@ class UserController {
 	}
 	
 	def createCustomerRecord(){
-		def shippingAddress
-		def billingAddress
+		def sAddress
+		def bAddress
 		def validUser = true
 		if(!validPassword()){
 			validUser = false
@@ -23,14 +25,14 @@ class UserController {
 			flash.message = "Username Already In Use"
 		}
 		if(validUser){
-			shippingAddress = new ShippingAddress(
-					address1: params.shippingAddress1, address2: params.shippingAddress2, 
-					city: params.shippingCity, state: params.shippingState, zipCode: params.shippingZipCode)
-			billingAddress = new BillingAddress(
-					address1: params.billingAddress1, address2: params.billingAddress2, 
-					city: params.billingCity, state: params.billingState, zipCode: params.billingZipCode)
-			def addressValidationErrors = taxService.addressLookup(billingAddress)
-			def shippingValidationErrors = taxService.addressLookup(shippingAddress)
+			sAddress = Address.findOrCreateByAddress1AndAddress2AndCityAndStateAndZipCode(
+					params.shippingAddress1, params.shippingAddress2, 
+					params.shippingCity, params.shippingState, params.shippingZipCode)
+			bAddress = Address.findOrCreateByAddress1AndAddress2AndCityAndStateAndZipCode(
+					params.billingAddress1, params.billingAddress2, 
+					params.billingCity, params.billingState, params.billingZipCode)
+			def addressValidationErrors = taxService.addressLookup(bAddress)
+			def shippingValidationErrors = taxService.addressLookup(sAddress)
 			if(addressValidationErrors){
 				validUser = false
 				flash.message = "Invalid Billing Address Entered"
@@ -43,18 +45,23 @@ class UserController {
 		}		
 		if(validUser){
 			def user = new User(username: params.username, password: params.password)
-			user.save(flush: true)
+			user.save(flush: true, failOnError: true)
 			def customer = new Customer(firstName: params.firstName, lastName: params.lastName,
 				user: user, emailAddress: params.emailAddress, phoneNumber:params.phoneNumber)
+			bAddress.save(flush:true)
+			sAddress.save(flush:true)
+			def billingAddress = new CustomerBillingAddress(address: bAddress)
+			def shippingAddress = new CustomerShippingAddress(address: sAddress)
 			customer.addToBillingAddresses(billingAddress)
 			customer.addToShippingAddresses(shippingAddress)
 			if (customer.save(flush: true)){
 				render(view:'registrationComplete')
 			}
-			else{
-				validUser = false
-				flash.message = user.errors.allErrors
-			}			
+//			else{
+//				validUser = false
+//				flash.message = user.errors.allErrors
+//				user.delete(flush: true)
+//			}			
 		}
 		if(!validUser){
 			redirect(action:'registerCustomer', params:params)

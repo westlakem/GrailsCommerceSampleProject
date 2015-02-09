@@ -72,6 +72,7 @@ grails.project.dependency.resolution = {
 		compile ":uploadr:1.1.1"
 		compile ":cxf-client:2.0.3"
 		compile ":spring-security-core:2.0-RC4"
+		compile ":rest-client-builder:2.0.3"
 		//testing
 		compile ":geb:0.10.0"
 		compile ":cucumber:1.0.1"

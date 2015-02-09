@@ -10,7 +10,9 @@ class Address {
 
     static constraints = {
 		address2 nullable:true
+		shippingAddress nullable:true
+		billingAddress nullable:true
     }
 	
-	static belongsTo = [shippingAddress: ShippingAddress, billingAddress: BillingAddress]
+	static belongsTo = [shippingAddress: CustomerShippingAddress, billingAddress: CustomerBillingAddress]
 }

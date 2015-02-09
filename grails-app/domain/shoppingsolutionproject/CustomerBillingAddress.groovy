@@ -1,9 +1,8 @@
 package shoppingsolutionproject
 
-class ShippingAddress{
+class CustomerBillingAddress{
 	
-	Address address
-	
+	Address address	
 	static belongsTo = [customer: Customer]
 
     static constraints = {

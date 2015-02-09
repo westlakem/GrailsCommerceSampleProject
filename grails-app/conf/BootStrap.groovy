@@ -1,4 +1,5 @@
 import shoppingsolutionproject.Category;
+import shoppingsolutionproject.Customer
 import shoppingsolutionproject.Item
 import shoppingsolutionproject.Role
 import shoppingsolutionproject.User
@@ -27,13 +28,12 @@ class BootStrap {
 				def employeeUser = new User(username: 'employee', password: 'password').save(flush: true)
 				def otherUser = new User(username: 'other', password: 'password').save(flush: true)
 				
+				/*def user = new User(username: 'customer', password: 'password').save(flush: true)
+				def customer = new Customer(firstName: 'Matt', lastName:'Westlake',  phoneNumber:6145967587,
+					emailAddress: 'westlake_m@yahoo.com', user:user)*/
 				UserRole.create adminUser, adminRole, true
 				UserRole.create employeeUser, employeeRole, true
 				UserRole.create otherUser, otherRole, true
-				
-				assert User.count() == 3
-				assert Role.count() == 3
-				assert UserRole.count() == 3
     }
     def destroy = {
     }

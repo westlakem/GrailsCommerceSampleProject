@@ -8,7 +8,7 @@ class Customer  {
 	String phoneNumber
 	String emailAddress
 	User user
-	static hasMany = [billingAddresses: BillingAddress, shippingAddresses: ShippingAddress, invoices: Invoice]
+	static hasMany = [billingAddresses: CustomerBillingAddress, shippingAddresses: CustomerShippingAddress, invoices: Invoice]
 
     static constraints = {
 		emailAddress email:true

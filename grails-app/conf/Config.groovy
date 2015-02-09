@@ -118,9 +118,10 @@ environments {
 		shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
 		
 		shoppingService.paymentProvider='authorizeDotNet'
+		shoppingService.authorizeDotNet.paymentUrl = 'https://test.authorize.net/gateway/transact.dll'
 		shoppingService.authorizeDotNet.apiLoginID = '2Pk2Cud93'
-		shoppingService.authorizeDotNet.transactionKey = '695bmUwYe7U93S5q'
-		shoppingService.authorizeDotNet.responseUrl = 'http://65.60.228.234:8080/ShoppingSolutionProject/shoppingCart/paymentAuthorizing'
+		shoppingService.authorizeDotNet.transactionKey = '2m8Xcq6gK5L3467A'
+		shoppingService.authorizeDotNet.responseUrl = 'http://65.60.228.234/ShoppingSolutionProject/shoppingCart/authorizePayment'
 		shoppingService.authroizeDotnet.md5Hash = 'thisVeryImportant'
 		shoppingService.twoCheckout.sellerId = '901262262'
 		shoppingService.twoCheckout.publicKey = '47C59E26-C88E-4FAB-A339-451E01EFCE33'
@@ -198,6 +199,7 @@ grails.plugin.springsecurity.interceptUrlMap = [
 		'/user/registerCustomer':					['permitAll'],
 		'/user/createCustomerRecord':				['permitAll'],
         '/user/**':						  			['ROLE_ADMIN'],
-		'/dbconsole/**':				  			['ROLE_ADMIN']
+		'/dbconsole/**':				  			['ROLE_ADMIN'],
+		'/customer/**':                             ['isAuthenticated()']
 		
 ]

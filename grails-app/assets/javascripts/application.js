@@ -190,6 +190,18 @@ $(document).ready( function() {
 	});
 });
 
+$(document).ready(function(){
+	$("#addBillingAddress").click(function(){
+		$("#newBillingAddress").toggle();
+	})
+});
+
+$(document).ready(function(){
+	$("#addShippingAddress").click(function(){
+		$("#newShippingAddress").toggle();
+	})
+})
+
 $(".empty_cart_link").click(function(){
 	return confirm("Are you sure you want to empty your cart?");
 });
@@ -237,3 +249,4 @@ function updateTotal(){
 	total += parseFloat($("#shippingCost").text().replace('$',''))
 	$("#totalAmmt").html('$'+total.toFixed(2));
 }
+

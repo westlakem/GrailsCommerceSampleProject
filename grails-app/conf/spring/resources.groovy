@@ -26,8 +26,9 @@ beans = {
 			apiLoginID = application.config.shoppingService.authorizeDotNet.apiLoginID
 			transactionKey = application.config.shoppingService.authorizeDotNet.transactionKey
 			responseUrl = application.config.shoppingService.authorizeDotNet.responseUrl
-			md5Hash = application.config.shoppingService.authorizeDotNet.md5Hash
+			md5Hash = application.config.shoppingService.authroizeDotnet.md5Hash
 			randomGenerator = new Random(System.currentTimeMillis())
+			grailsApplication = ref('grailsApplication')
 		}
 		break
 	}
