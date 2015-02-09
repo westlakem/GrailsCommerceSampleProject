@@ -5,7 +5,10 @@
 		<input type="hidden" name="invoiceNumber" value="${invoice.id}">
 		<g:submitButton value="Pay Now!" name="submitForPayment"/>
 	</g:form>
+	${grailsApplication.config.shoppingService.acceptPaypal}
+	<g:if test="${grailsApplication.config.shoppingService.acceptPaypal == true}">
 		<button type="button" name="submit" class = "paypalCheckout" value=""></button>
+	</g:if>
 	</div>
 	
 	<table class="products">
@@ -68,6 +71,8 @@
 		<input type="hidden" name="invoiceNumber" value="${invoice.id}">
 		<g:submitButton value="Pay Now!" name="submitForPayment"/>
 	</g:form>
+	<g:if test="${grailsApplication.config.shoppingService.acceptPaypal == true}">
 		<button type="button" name="submit" class = "paypalCheckout" value=""></button>
+	</g:if>
 	</div>
 </div>
