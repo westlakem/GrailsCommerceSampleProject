@@ -41,3 +41,5 @@ Setup the following items in your config.groovy:
 
 Optional Fields include:
 * shoppingService.acceptPaypal = true
+
+For updates on the progress of this plugin, or to contribute, please visit https://trello.com/b/US35VG1V
