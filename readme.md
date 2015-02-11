@@ -1,8 +1,18 @@
+
 #ROCS is a project in initial development!#
 
 This plugin is being developed as an eCommerce platform for Grails.
 
 ## What You Will Need ##
+
+THIS IS STILL A PROJECT IN INITIAL DEVELOPMENT!
+
+This plugin is being developed as an eCommerce platform for Grails
+
+In order to use this platform, you'll need:
+* A database
+* A taxCloudID
+* A payment privider (Authorize.net or 2Checkout are both currently supported)
 
 In order to use this platform, you'll need:
 
