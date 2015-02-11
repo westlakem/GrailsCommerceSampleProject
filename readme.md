@@ -1,45 +1,64 @@
-THIS IS STILL A PROJECT IN INITAL DEVELOPMENT!
+#ROCS is a project in initial development!#
 
-We highly recommend Authorize.net for the default payment provider, but as it does require a setup fee as well as a monthly fee, we include 2Checkout as a free alternative.  Authorize.net includes a full suite of tools for helping manage customer's payments.  If you would like to support the primary developer at no additional charge to you or your client, please sign up for Authorize.net at http://reseller.authorize.net/application/?resellerId=27456 OR 2Checkout at https://www.2checkout.com/referral?r=bf4c59f848. 
+This plugin is being developed as an eCommerce platform for Grails.
 
-Authorize.net's offerings that are not available for 2Checkout include (but are not limited to):
-* Full suite of Fraud Detection options
-* Voiding a payment 
-* Manual (keyed) payment by your staff
-* Full view of settled and unsettled transactions
+## What You Will Need ##
 
-In order to use Authorize.net payment solutions:
+In order to use this platform, you'll need:
 
-Go to http://reseller.authorize.net/application/?resellerId=27456 and setup a merchant account.
+* A Grails Application ( version 2.x )
+* A database
+* A USPS shipping API account
+* A taxCloud account
+* An Authorize.net Payment Gateway & Merchant Account
+
+## USPS Shipping API ##
+
+The USPS shipping API is used to validate billing and shipping addresses entered by your customers.  You can sign up for the account by going to https://secure.shippingapis.com/registration/
+
+After you sign up, you will need to add your USPS user id as follows:
+
+* shoppingService.uspsUserId = yourUSPSID
+
+## Tax Cloud ##
+
+Tax Cloud allows you to accurately charge the correct tax rate for transactions.  It is a free service provided to eliminate the guess work when it comes to calculating sales tax. You will need to sign up at https://taxcloud.net/ 
+
+Once you have signed up, you will need to complete the following:
+
+* Setup all your business locations (This determines when / where you need to charge tax)
+* Register your website(Make sure you add a default TIC as this will be the tax information used to determine taxable items)
+
+After that is completed, you will need to add the following to your config.groovy
+
+* shoppingService.taxCloud.loginId = yourAPIID
+* shoppingService.taxCloud.apiKey = yourAPIKey
+
+## Authorize.net Account ##
+
+This is the payment provider.  This is the service that actually processes the payment.
+
+I would appreciate you supporting my development efforts by signing up through my reseller account.  You can do this by going to http://reseller.authorize.net/application/?resellerId=27456 and completing the registration.  This is at no additional cost to you or your client.
+
 Once you have set up the account, go to your account settings and:
+
 * setup the MD5Hash
 * get ApiLoginId & transaction keys
 * set relayResponseUrl(IMPORTANT: this must be set to 'yoursite.com/shoppingCart/authorizePayment')
 
 Setup the following items in your config.groovy:
+
 * shoppingService.paymentProvider = 'authorizeDotNet'
 * shoppingService.authorizeDotNet.paymentUrl = 'https://test.authorize.net/gateway/transact.dll' //for testing
 * shoppingService.authorizeDotNet.apiLoginID = yourApiLoginId
 * shoppingService.authorizeDotNet.transactionKey = yourTransactionKey
-* shoppingService.authorizeDotNet.responseUrl = 'yoursite.com/shoppingCart/authorizePayment' *
+* shoppingService.authorizeDotNet.responseUrl = 'yoursite.com/shoppingCart/authorizePayment'
 * shoppingService.authroizeDotnet.md5Hash = yourMD5Hash
 
-In order to use 2Checkout payment solutions:
-
-Go to https://www.2checkout.com/referral?r=bf4c59f848 and setup a merchant account.
-Once you have set up the account, go to your account settings and get your:
-* sellerId
-* publicKey
-* privateKey
-
-Setup the following items in your config.groovy:
-* shoppingService.paymentProvider = '2Checkout'
-* shoppingService.twoCheckout.sellerId = mySellerId
-* shoppingService.twoCheckout.publicKey = myPublicKey
-* shoppingService.twoCheckout.privateKey = myPrivateKey
-* shoppingService.twoCheckout.environment = 'sandbox' // for testing
-
 Optional Fields include:
+
 * shoppingService.acceptPaypal = true
+
+## Project information ##
 
 For updates on the progress of this plugin, or to contribute, please visit https://trello.com/b/US35VG1V

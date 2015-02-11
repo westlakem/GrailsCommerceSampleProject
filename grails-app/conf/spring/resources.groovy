@@ -1,12 +1,11 @@
 // Place your Spring DSL code here
 import shoppingsolutionproject.CartService
 import shoppingsolutionproject.TaxCloudService
-import shoppingsolutionproject.TwoCheckoutService
 import shoppingsolutionproject.AuthorizeDotNetService
 beans = {
 	cartService(CartService)
 	taxService(TaxCloudService){
-		uspsUserId = application.config.shoppingService.taxCloud.uspsUserId
+		uspsUserId = application.config.shoppingService.uspsUserId
 		taxCloud = ref('taxCloud')
 		shoppingCartService = ref('shoppingCartService')
 		origin = application.config.shoppingService.taxCloud.origin
@@ -14,13 +13,6 @@ beans = {
 		apiKey = application.config.shoppingService.taxCloud.apiKey
 	}
 	switch(application.config.shoppingService.paymentProvider){
-		case '2Checkout':
-		paymentService(TwoCheckoutService){
-			privateKey = application.config.shoppingService.twoCheckout.privateKey
-			environment = application.config.shoppingService.twoCheckout.environment
-			sellerId = application.config.shoppingService.twoCheckout.sellerId
-		}
-		break
 		case 'authorizeDotNet':
 		paymentService(AuthorizeDotNetService){
 			apiLoginID = application.config.shoppingService.authorizeDotNet.apiLoginID

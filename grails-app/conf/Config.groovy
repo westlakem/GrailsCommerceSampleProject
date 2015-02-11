@@ -114,7 +114,7 @@ environments {
 		//TODO: remove these before final plugin integration
 		shoppingService.taxCloud.loginId = '35942020'
 		shoppingService.taxCloud.apiKey = '191D12F2-47BB-4612-9A9E-B67B5E64F790'
-		shoppingService.taxCloud.uspsUserId = '380NONEY4790'
+		shoppingService.uspsUserId = '380NONEY4790'
 		shoppingService.taxCloud.origin = [address1: '3646 Ripley Trail Drive', address2: '', city:'Pickerington', state:'Ohio', zip: '43147']
 		
 		shoppingService.paymentProvider='authorizeDotNet'
@@ -123,10 +123,6 @@ environments {
 		shoppingService.authorizeDotNet.transactionKey = '2m8Xcq6gK5L3467A'
 		shoppingService.authorizeDotNet.responseUrl = 'http://65.60.228.234/ShoppingSolutionProject/shoppingCart/authorizePayment'
 		shoppingService.authroizeDotnet.md5Hash = 'thisVeryImportant'
-		shoppingService.twoCheckout.sellerId = '901262262'
-		shoppingService.twoCheckout.publicKey = '47C59E26-C88E-4FAB-A339-451E01EFCE33'
-		shoppingService.twoCheckout.privateKey = '1474E54F-F9BF-4262-A2B5-522CD2E2D62C'
-		shoppingService.twoCheckout.environment = 'sandbox'
 		
 		// Added by the Spring Security Core plugin:
 		
