@@ -5,10 +5,6 @@ This plugin is being developed as an eCommerce platform for Grails.
 
 ## What You Will Need ##
 
-THIS IS STILL A PROJECT IN INITIAL DEVELOPMENT!
-
-This plugin is being developed as an eCommerce platform for Grails
-
 In order to use this platform, you'll need:
 * A database
 * A taxCloudID

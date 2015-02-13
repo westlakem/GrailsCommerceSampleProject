@@ -2,11 +2,14 @@ package shoppingsolutionproject
 
 class Item extends com.metasieve.shoppingcart.Shoppable{
 
-	int productNumber
+	Boolean tangible
+	Integer productNumber
+	Integer tic
 	String name
 	String description
-	Double shippingCost = null
 	String url
+	Boolean shippable = true
+	Double shippingCost = null
 	Double retailPrice
 	Double salePrice = null
 	String primaryImage

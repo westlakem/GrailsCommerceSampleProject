@@ -39,14 +39,16 @@ class CartService {
 	}
 	
 	def shippingCost(shoppingCartService){
-		def shippingCost=0
+		def shippingCost=0.00
 		def cart = shoppingCartItems(shoppingCartService);
 		if (cart.isEmpty()){
-			return 0.00
+			return shippingCost
 		}
 		else{
 			cart.each(){item ->
-				shippingCost += item.productInfo['shippingCost']*item.qty ?: 0.00
+				if(item.productInfo['shippingCost']){
+					shippingCost += item.productInfo['shippingCost']*item.qty ?: 0.00					
+				}
 			}
 		}
 		return shippingCost

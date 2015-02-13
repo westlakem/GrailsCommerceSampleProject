@@ -21,7 +21,14 @@ class ShoppingCartController {
 	
 	def view(){
 		def cart = cartService.shoppingCartItems(shoppingCartService)
-		[cart:cart]	
+		def shippable = false
+		cart.each(){ item ->
+			if(item.productInfo['shippable']){
+				shippable = true
+				return
+			}
+		}
+		[cart:cart, shippable:shippable ]	
 	}
 	
 	def enterPayment(){
@@ -136,7 +143,14 @@ class ShoppingCartController {
 			redirect (action:'checkoutAsGuest', params: params)
 		}
 		(cart, customerInvoice) = createInvoice(customerName, billingAddress, shippingAddress)
-		[cart:cart, invoice: customerInvoice]
+		def shippable = false
+		cart.each { item ->
+			if(item.productInfo['shippable']){
+				shippable = true
+				return
+			}
+		}
+		[cart:cart, invoice: customerInvoice, shippable: shippable]
 	}
 	
 	def addToCart(){
@@ -170,7 +184,7 @@ class ShoppingCartController {
 	}
 	
 	def getShippingCost(){
-		render(String.format("%.2f", cartService.shippingCost(shoppingCartService)))
+		render(String.format("%.2f", cartService.shippingCost(shoppingCartService)) ?: 0.00)
 	}
 	
 	def updateQuantity(){
@@ -203,19 +217,17 @@ class ShoppingCartController {
 		def customer = user? Customer.findByUser(user) : null
 		def cart = cartService.shoppingCartItems(shoppingCartService)
 		def subtotal = cartService.subtotal(cart, shoppingCartService)
-		def taxAmmt = taxService.taxAmmount(cart, shippingAddress).round(2)
 		def shippingCost = cartService.shippingCost(shoppingCartService)
-		def total = taxAmmt + shippingCost + subtotal
 		def customerInvoice = new Invoice(
 				name: customerName,
 				subtotal: subtotal,
-				tax: taxAmmt,
 				shippingCost: shippingCost,
 				shippingAddress: shippingAddress,
 				billingAddress: billingAddress,
 				fulfilled: false,
 				customer: customer,
-				paid: false).save(flush:true, failOnError: true)
+				paid: false).save(flush: true)
+		customerInvoice.tax = taxService.taxAmmount(cart, shippingAddress, customerInvoice).round(2)
 		cart.each() {item ->
 			def price = item.productInfo['salePrice'] ?: item.productInfo['retailPrice']
 			def invoiceItem = new InvoiceItem(productNumber : item.productInfo['productNumber'], name: item.productInfo['name'], description: item.productInfo['description'], price: price, qty: shoppingCartService.getQuantity(Item.findByProductNumber(item.productInfo['productNumber'])))

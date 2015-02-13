@@ -43,27 +43,30 @@
 				<td/>
 				<td/>
 				<td>Sub Total:</td>
-				<td><div id="subTotal">$${invoice.subtotal}</div></td>
+				<td><div id="subTotal">$${String.format("%.2f", invoice.subtotal)}</div></td>
 			</tr>
+			<g:if test="${shippable}">
 			<tr>
 				<td/>
 				<td/>
 				<td/>
 				<td>Shipping:</td>
-				<td><div id="shipping">$${invoice.shippingCost}</div></td>
+				<td><div id="shipping">$${String.format("%.2f", invoice.shippingCost)}</div></td>
+			</tr>
+			</g:if>
 			<tr id="salesTax">
 				<td/>
 				<td/>
 				<td/>
 				<td class="totalsLabel">Tax:</td>
-				<td><div id="salesTaxAmmt">$${invoice.tax}</div></td>
+				<td><div id="salesTaxAmmt">$${String.format("%.2f", invoice.tax)}</div></td>
 			</tr>
 			<tr id="Total">
 				<td/>
 				<td/>
 				<td/>
 				<td> TOTAL:</td>
-				<td><div id="total">$${invoice.total}</div></td>
+				<td><div id="total">$${String.format("%.2f", invoice.total)}</div></td>
 			</tr>
 		</tbody>
 	</table>

@@ -19,6 +19,26 @@ if (typeof jQuery !== 'undefined') {
 	})(jQuery);
 };
 
+$(document).ready( function(){
+	toggleShippingCosts($("#shippable"))
+})
+
+$(document).ready( function() {
+	$("#shippable").change(function(){
+		toggleShippingCosts($(this))
+	})
+})
+
+function toggleShippingCosts(shippable){
+	if(shippable.is(":checked")){
+		$("#shippingCost").prop('disabled', false);
+	}
+	else{
+		$("#shippingCost").val('0.00')
+		$("#shippingCost").prop('disabled', true);
+	}
+}
+
 $(document).ready( function() { 
 	updateTotals();
 });
@@ -170,6 +190,7 @@ $(document).ready( function() {
 		}
 	});
 });
+
 $(document).ready( function() {
 	$("#searchBar").keyup(function(){
 		var $search = $(this).val();
@@ -244,9 +265,9 @@ function updateShippingCost(){
 }
 
 function updateTotal(){
-	var total = 0
-	total += parseFloat($("#subTotalAmmt").text().replace('$',''))
-	total += parseFloat($("#shippingCost").text().replace('$',''))
+	var subtotal = parseFloat($("#subTotalAmmt").text().replace('$','')) || 0.00 
+	var shipping = parseFloat($("#shippingCost").text().replace('$','')) || 0.00
+	total = subtotal + shipping
 	$("#totalAmmt").html('$'+total.toFixed(2));
 }
 

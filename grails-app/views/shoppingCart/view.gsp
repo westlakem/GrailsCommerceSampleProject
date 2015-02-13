@@ -42,12 +42,15 @@
 				<td>Sub Total:</td>
 				<td><div id="subTotalAmmt"></div></td>
 			</tr>
+			<g:if test="${shippable}">
 			<tr>
 				<td/>
 				<td/>
 				<td/>
 				<td>Shipping:</td>
 				<td><div id="shippingCost"></div></td>
+			</tr>
+			</g:if>
 			<g:if test="${!tax == 0}">
 			<tr id="salesTax">
 				<td/>

@@ -13,12 +13,12 @@ class BootStrap {
     	def vehicle = new Category(name: 'Vehicle').save()
 		def car = new Category(name: 'Car', parentCategory: vehicle).save()
 		def truck = new Category(name: 'Truck', parentCategory: vehicle).save()
-		new Item(productNumber:1, name:"First Product", description: "This is the first product I'm adding for testing",
-				 shippingCost: 4.99, url: '/first', retailPrice: 19.99, salePrice: 16.99, category: car).save(failOnError: true)
-		new Item(productNumber:2, name:"Second Product", description: "This is the second product I'm adding for testing",
-				shippingCost: 4.99, url: '/second', retailPrice: 19.99, category: truck).save(failOnError: true)
-		new Item(productNumber:3, name:"First/Second Product", description: "This is the first/second(so third) product I'm adding for testing",
-				shippingCost: 4.99, url: '/third', retailPrice: 17.99, category: truck).save(failOnError: true)
+//		new Item(productNumber:1, name:"First Product", description: "This is the first product I'm adding for testing",
+//				 shippingCost: 4.99, url: '/first', retailPrice: 19.99, salePrice: 16.99, category: car).save(failOnError: true)
+//		new Item(productNumber:2, name:"Second Product", description: "This is the second product I'm adding for testing",
+//				shippingCost: 4.99, url: '/second', retailPrice: 19.99, category: truck).save(failOnError: true)
+//		new Item(productNumber:3, name:"First/Second Product", description: "This is the first/second(so third) product I'm adding for testing",
+//				shippingCost: 4.99, url: '/third', retailPrice: 17.99, category: truck).save(failOnError: true)
 				
 				def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
 				def employeeRole = new Role(authority: 'ROLE_EMPLOYEE').save(flush: true)

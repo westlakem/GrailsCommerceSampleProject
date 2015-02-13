@@ -22,5 +22,6 @@ class Invoice {
 	static constraints = {
 		paymentTrasactionId nullable:true
 		customer nullable:true
+		tax nullable:true
 	}
 }

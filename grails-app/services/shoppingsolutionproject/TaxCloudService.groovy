@@ -29,7 +29,7 @@ class TaxCloudService {
 		return addressValidationErrors.errDescription
 	}
 	
-	def taxAmmount(cart, address) {
+	def taxAmmount(cart, address, invoice) {
 		
 		def web = WebUtils.retrieveGrailsWebRequest()
 		def cartItems = compileArrayOfCartItem(cart)
@@ -40,7 +40,7 @@ class TaxCloudService {
 			loginId,
 			apiKey,
 			web.getSession().firstName.toString() + web.getSession().lastName.toString(),
-			web.getSession().firstName.toString() + web.getSession().lastName.toString() + new Date().getDateTimeString(),
+			invoice.id.toString(),
 			cartItems,
 			origin,
 			shippingAddress,
@@ -67,7 +67,7 @@ class TaxCloudService {
 				}
 		def itemForLookup = Item.findByProductNumber(item.productInfo['productNumber'])
 				CartItem ci = new CartItem(
-						index: index, itemID: item.productInfo['productNumber'].toString(), tic: 91040, price: itemPrice, qty: shoppingCartService.getQuantity(itemForLookup).toInteger())
+						index: index, itemID: item.productInfo['productNumber'].toString(), tic: item.productInfo['tic'], price: itemPrice, qty: shoppingCartService.getQuantity(itemForLookup).toInteger())
 		cartItems.getCartItem().add(ci)
 		}
 		return cartItems
